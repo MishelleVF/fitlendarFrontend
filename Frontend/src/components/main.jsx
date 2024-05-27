@@ -1,20 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+
+// Screens
+import Home from '../screens/home';
+import Exercises from '../screens/exercises';
+import Profile from '../screens/profile';
+
+// Screens Names
+const homeName = 'Calendar';
+const exercisesName = 'Exercises';
+const profileName = 'Profile'
+
+const Tab = createBottomTabNavigator();
 
 export function Main() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName={homeName}
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            let rn = route.name;
+
+            if (rn === homeName){
+              iconName = focused ? 'calendar' : 'calendar';
+            } else if (rn === exercisesName){
+              iconName = focused ? 'barbell' : 'barbell';
+            } else if (rn == profileName){
+              iconName = focused ? 'person' : 'person';
+            }
+
+            return <Ionicons name={ iconName } size={ size } color={ color }/>
+
+          },
+        })}
+      >
+        <Tab.Screen name={homeName} component={ Home }/>
+        <Tab.Screen name={exercisesName} component={ Exercises }/>
+        <Tab.Screen name={profileName} component={ Profile }/>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
