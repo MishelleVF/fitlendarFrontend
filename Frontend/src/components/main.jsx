@@ -8,11 +8,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Screens
 import Home from '../screens/home';
 import Exercises from '../screens/exercises';
+import Sugestions from '../screens/sugestions'
 import Profile from '../screens/profile';
 
 // Screens Names
 const homeName = 'Calendar';
 const exercisesName = 'Exercises';
+const sugestionsName = 'Sugestions'
 const profileName = 'Profile'
 
 const Tab = createBottomTabNavigator();
@@ -33,6 +35,8 @@ export function Main() {
               iconName = focused ? 'barbell' : 'barbell';
             } else if (rn == profileName){
               iconName = focused ? 'person' : 'person';
+            } else if (rn = sugestionsName){
+              iconName = focused ? 'bulb-outline' : 'bulb-outline';
             }
 
             return <Ionicons name={ iconName } size={ size } color={ color }/>
@@ -42,6 +46,7 @@ export function Main() {
       >
         <Tab.Screen name={homeName} component={ Home }/>
         <Tab.Screen name={exercisesName} component={ Exercises }/>
+        <Tab.Screen name={sugestionsName} component={ Sugestions }/>
         <Tab.Screen name={profileName} component={ Profile }/>
       </Tab.Navigator>
     </NavigationContainer>
