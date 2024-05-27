@@ -25,6 +25,18 @@ export const exercisesStyle = StyleSheet.create({
     },
 });
 
+export const sugestionsStyle = StyleSheet.create({
+    view: {
+        flex : 1,
+        alignContent : 'center',
+        justifyContent : 'center',
+    },
+    text: {
+        fontSize : '26px',
+        fontWeight : 'Blob',
+    },
+});
+
 export const profileStyle = StyleSheet.create({
     view: {
         flex : 1,
