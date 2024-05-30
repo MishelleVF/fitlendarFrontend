@@ -10,6 +10,9 @@ import Home from '../screens/home';
 import Exercises from '../screens/exercises';
 import Profile from '../screens/profile';
 
+// prueba
+import Calendario_Semanal from '../screens/calendario_semanal';
+
 // Screens Names
 const homeName = 'Calendar';
 const exercisesName = 'Exercises';
@@ -40,7 +43,7 @@ export function Main() {
           },
         })}
       >
-        <Tab.Screen name={homeName} component={ Home }/>
+        <Tab.Screen name={homeName} component={ Calendario_Semanal }/>
         <Tab.Screen name={exercisesName} component={ Exercises }/>
         <Tab.Screen name={profileName} component={ Profile }/>
       </Tab.Navigator>
