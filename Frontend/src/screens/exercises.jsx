@@ -1,6 +1,10 @@
 import { Text, View, FlatList, Image, StyleSheet } from 'react-native';
 import { exercisesStyle } from '../estilos/estilos'
 
+import MakeExercise from './makeExercise';
+
+import FloatingButton from '../components/floating';
+
 import exercises from './ejercicios.json';
 
 export default function Exercises(){
@@ -10,6 +14,9 @@ export default function Exercises(){
         // </View>
         <View style={styles.container_ejercicio_a}>
             <Text style={styles.header_ejercicio_a}>Ejercicios</Text>
+            <FloatingButton onPress={ handlePress = () => {
+              <MakeExercise />
+            }}/>
             <FlatList
                 data = {exercises}
                 renderItem={({item}) => (
