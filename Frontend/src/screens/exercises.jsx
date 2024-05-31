@@ -41,6 +41,7 @@ export default function Exercises(){
                 horizontal
                 showsHorizontalScrollIndicator={false}
             />
+            
         </View>
     )
 }
