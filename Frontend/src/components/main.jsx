@@ -1,17 +1,11 @@
-import { Text, View } from 'react-native';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
 // Screens
-import Home from '../screens/home';
+import Calendario_Semanal from '../screens/calendario_semanal';
 import Exercises from '../screens/exercises';
 import Profile from '../screens/profile';
-
-// prueba
-import Calendario_Semanal from '../screens/calendario_semanal';
 
 // Screens Names
 const homeName = 'Calendar';

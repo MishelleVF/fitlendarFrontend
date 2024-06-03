@@ -5,6 +5,7 @@ import exercises from './ejercicios.json';
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const hoursOfDay = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
+
 export default function Calendario_Semanal(){
     const [selectedRange, setSelectedRange] = useState({ day: null, startHour: null, endHour: null });
     const [isSelecting, setIsSelecting] = useState(false);
@@ -58,7 +59,7 @@ export default function Calendario_Semanal(){
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Calendario Semanal</Text>
+            {/*<Text style={styles.header}>Calendario Semanal</Text>*/}
             <ScrollView>
                 <View style={styles.calendar}>
                     {daysOfWeek.map(day => (
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#fff',
+        backgroundColor: '#000',
 
     },
     header: {
@@ -153,27 +154,30 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
+        color: '#fff',
         marginBottom: 5,
     },
     hourBlock: {
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#000',
+        backgroundColor: '#fff',
         padding: 10,
+        height: 25,
         alignItems: 'center',
         justifyContent: 'center',
     },
     selectedHourBlock: {
-        backgroundColor: '#cce5ff',
+        backgroundColor: '#BBF247',
     },
     confirmButton: {
         padding: 15,
-        backgroundColor: '#28a745',
+        backgroundColor: '#BBF247',
         borderRadius: 5,
         alignItems: 'center',
         margin: 10,
     },
     confirmButtonText: {
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
     },
     modalContainer: {
