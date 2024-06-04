@@ -1,12 +1,9 @@
-import { Text, View } from 'react-native';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
 // Screens
-import Home from '../screens/home';
+import Calendario_Semanal from '../screens/calendario_semanal';
 import Exercises from '../screens/exercises';
 import Sugestions from '../screens/sugestions'
 import Profile from '../screens/profile';
@@ -44,7 +41,7 @@ export function Main() {
           },
         })}
       >
-        <Tab.Screen name={homeName} component={ Home }/>
+        <Tab.Screen name={homeName} component={ Calendario_Semanal }/>
         <Tab.Screen name={exercisesName} component={ Exercises }/>
         <Tab.Screen name={sugestionsName} component={ Sugestions }/>
         <Tab.Screen name={profileName} component={ Profile }/>
