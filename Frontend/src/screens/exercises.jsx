@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, FlatList, Image, StyleSheet, Modal, TouchableOpacity, TextInput } from 'react-native';
+import { Text, View, FlatList, Image, StyleSheet, Modal, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import exercises from './ejercicios.json';
@@ -17,6 +17,7 @@ export default function Exercises() {
 
   // Enviar datos al backend
   const handleSubmit = () => {
+    () => setModalVisible(false);
     fetch('API', {
       method: 'POST',
       headers: {
@@ -82,44 +83,44 @@ export default function Exercises() {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalContainer}>
+        <SafeAreaView style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.form_title}>MI EJERCICIO:</Text>
+            <Text style={styles.form_text_input_title}>Nombre del Ejercicio: </Text>
             <TextInput
-              placeholder="Nombre del Ejercicio"
               value={nombre}
               onChangeText={text => setNombre(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Musculo: </Text>
             <TextInput
-              placeholder="Musculo"
               value={musculo}
               onChangeText={text => setMusculo(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Series: </Text>
             <TextInput
-              placeholder="Series"
               value={series}
               onChangeText={text => setSeries(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Repeticiones: </Text>
             <TextInput
-              placeholder="Repeticiones"
               value={repeticiones}
               onChangeText={text => setRepeticiones(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Tiempo estimado: </Text>
             <TextInput
-              placeholder="Tiempo estimado"
               value={tiempo}
               onChangeText={text => setTiempo(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Calorias aprox.: </Text>
             <TextInput
-              placeholder="Calorias aprox."
               value={calorias}
               onChangeText={text => setCalorias(text)}
-              style={{ marginBottom: 15, borderWidth: 1, padding: 10 }}
+              style={styles.form_text_input}
             />
             <View style={styles.from_button}>
               <TouchableOpacity style={styles.from_button_cerrar} onPress={() => setModalVisible(false)}>
@@ -130,7 +131,7 @@ export default function Exercises() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     </View>
   );
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     form_title: {
       marginBottom: 20,
       fontSize: 40,
-      marginTop: 20,
+      marginTop: 10,
     },
     from_button: {
       flexDirection: 'row',
@@ -239,5 +240,14 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontSize: 16,
       fontWeight: 'bold',
+    },
+    form_text_input: {
+      marginBottom: 15,
+      borderWidth: 1,
+      padding: 10,
+      borderRadius: 5,
+    },
+    form_text_input_title: {
+      marginBottom: 2,
     },
   });
