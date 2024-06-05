@@ -1,14 +1,45 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import {GoogleButton} from 'react-google-button';
-import LoginStyle from '../estilos/estilos.jsx';
-
+import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos'
 
 export function Login() {
     return (
       <View style={ exercisesStyle.view }>
-        <Text style={ exercisesStyle.text }>Ejercicios</Text>
+        <Text style={exercisesStyle.text}>Login</Text>
+        <TextInput
+          style={login2.input}
+          placeholder="Correo electrónico"
+          keyboardType="email-address"
+        />
+
+        <TextInput
+          style={login2.input}
+          placeholder="Contraseña"
+          secureTextEntry={true}
+        />
+
+        <TextInput
+          style={login2.input}
+          placeholder="Confirmar contraseña"
+          secureTextEntry={true}
+        />
+        
+        <TouchableOpacity style={login2.button}>
+          <Text style={login2.buttonText}>CONTINUAR</Text>
+        </TouchableOpacity>
+
+        <Text style={login2.guestText}>Quieres continuar sin crear una cuenta?</Text>
+
+        <TouchableOpacity style={login2.guestButton}>
+          <Text style={login2.guestButtonText}>CONTINUAR COMO INVITADO</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={login2.googleButton2}>
+            <Text style={login2.buttonText2}>Google button</Text>
+        </TouchableOpacity>
+
      </View>
     );
   }
+
