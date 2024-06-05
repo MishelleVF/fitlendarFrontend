@@ -52,7 +52,7 @@ export const homeStyle = StyleSheet.create({
         justifyContent : 'center',
     },
     text: {
-        fontSize : '26px',
+        fontSize : 26,
         fontWeight : 'Blob',
     },
 });
