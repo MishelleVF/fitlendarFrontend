@@ -12,16 +12,24 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dev.Fitlander"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dev.Fitlander"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "scheme": "fitlander",
+    "extra": {
+      "eas": {
+        "projectId": "043534ab-4dff-42b6-84e3-10e07d08807a"
+      }
     }
   }
 }
