@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos';
 
-export function SignUp1({ navigation }) {
+export function Crear1({ navigation }) {
   return (
     <View style={exercisesStyle.view}>
       <Text style={exercisesStyle.text}>Login</Text>
