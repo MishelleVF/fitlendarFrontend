@@ -8,7 +8,7 @@ export const homeStyle = StyleSheet.create({
         justifyContent : 'center',
     },
     text: {
-        fontSize : '26px',
+        fontSize : 26,
         fontWeight : 'Blob',
     },
 });
@@ -20,7 +20,7 @@ export const exercisesStyle = StyleSheet.create({
         justifyContent : 'center',
     },
     text: {
-        fontSize : '26px',
+        fontSize : 26,
         fontWeight : 'Blob',
     },
 });
@@ -32,7 +32,7 @@ export const sugestionsStyle = StyleSheet.create({
         justifyContent : 'center',
     },
     text: {
-        fontSize : '26px',
+        fontSize : 26,
         fontWeight : 'Blob',
     },
 });
@@ -44,7 +44,7 @@ export const profileStyle = StyleSheet.create({
         justifyContent : 'center',
     },
     text: {
-        fontSize : '26px',
+        fontSize : 26,
         fontWeight : 'Blob',
     },
 });
