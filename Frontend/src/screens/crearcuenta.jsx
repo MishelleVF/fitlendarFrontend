@@ -46,7 +46,7 @@ export function Crear1({ navigation }) {
         onPress={() => navigation.replace('Home')}
       >
         <Text style={login2.buttonText2}>Google button</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>      
     </View>
   );
 }
