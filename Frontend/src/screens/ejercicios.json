@@ -1,0 +1,80 @@
+
+[{
+    "nombre": "Sentadilla con barra",
+    "descripcion": "De pie, con los pies separados a la anchura de los hombros, sostenga una barra con las manos sobre la cabeza. Doble las rodillas y baje el cuerpo hasta que los muslos estén paralelos al suelo. Empuje hacia arriba para volver a la posición inicial.",
+    "dificultad": "media",
+    "tipo": "fuerza",
+    "equipo": "Barra",
+    "musculo": "Piernas",
+    "foto": "",
+    "peso": 50,
+    "series": 3,
+    "repeticiones": 10,
+    "duracion": 30
+},
+{
+    "nombre": "Press de banca",
+    "descripcion": "Acuéstese boca arriba en un banco con los pies apoyados en el suelo. Sostenga una barra con las manos sobre la anchura de los hombros. Baje la barra hasta que toque el pecho y luego empuje hacia arriba para volver a la posición inicial.",
+    "dificultad": "media",
+    "tipo": "fuerza",
+    "equipo": "Barra",
+    "musculo": "Pecho",
+    "foto": "",
+    "peso": 60,
+    "series": 3,
+    "repeticiones": 8,
+    "duracion": 30
+},
+{
+    "nombre": "Remo con barra",
+    "descripcion": "Siéntese en una máquina de remo con las piernas flexionadas y los pies apoyados en los pedales. Sostenga la barra con las manos sobre la anchura de los hombros. Tire de la barra hacia el pecho y luego extienda los brazos para volver a la posición inicial.",
+    "dificultad": "media",
+    "tipo": "fuerza",
+    "equipo": "Máquina de remo",
+    "musculo": "Espalda",
+    "foto": "",
+    "peso": 70,
+    "series": 3,
+    "repeticiones": 12,
+    "duracion": 30
+},
+{
+    "nombre": "Zancada con mancuernas",
+    "descripcion": "De pie, con los pies separados a la anchura de los hombros, sostenga una mancuerna en cada mano. Dé un paso adelante con una pierna y doble las rodillas hasta que la rodilla trasera casi toque el suelo. Empuje hacia arriba para volver a la posición inicial y repita con la otra pierna.",
+    "dificultad": "media",
+    "tipo": "fuerza",
+    "equipo": "Mancuernas",
+    "musculo": "Piernas y glúteos",
+    "foto": "",
+    "peso": 20,
+    "series": 3,
+    "repeticiones": 10,
+    "duracion": 30
+},
+{
+    "nombre": "Curl de bíceps",
+    "descripcion": "De pie, con los pies separados a la anchura de los hombros, sostenga una mancuerna en cada mano con las palmas hacia arriba. Doble los codos y levante las pesas hacia los hombros. Baje las pesas lentamente hasta la posición inicial.",
+    "dificultad": "fácil",
+    "tipo": "fuerza",
+    "equipo": "Mancuernas",
+    "musculo": "Bíceps",
+    "foto": "",
+    "peso": 10,
+    "series": 3,
+    "repeticiones": 12,
+    "duracion": 20
+},
+{
+    "nombre": "Elevaciones laterales",
+    "descripcion": "De pie, con los pies separados a la anchura de los hombros, sostenga una mancuerna en cada mano con los brazos a los lados. Levante los brazos hacia los lados hasta la altura de los hombros y luego baje lentamente hasta la posición inicial.",
+    "dificultad": "fácil",
+    "tipo": "fuerza",
+    "equipo": "Mancuernas",
+    "musculo": "Hombros",
+    "foto": "",
+    "peso": 5,
+    "series": 3,
+    "repeticiones": 12,
+    "duracion": 20
+}
+]
