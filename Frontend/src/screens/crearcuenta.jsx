@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos';
 
-export function Login({ navigation }) {
+export function Crear1({ navigation }) {
   return (
     <View style={exercisesStyle.view}>
       <Text style={exercisesStyle.text}>Login</Text>
@@ -46,7 +46,7 @@ export function Login({ navigation }) {
         onPress={() => navigation.replace('Home')}
       >
         <Text style={login2.buttonText2}>Google button</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>      
     </View>
   );
 }
