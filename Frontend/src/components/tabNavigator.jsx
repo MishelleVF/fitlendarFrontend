@@ -3,13 +3,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Screens
-import Home from '../screens/home';
 import Exercises from '../screens/exercises';
 import Sugestions from '../screens/sugestions';
 import Profile from '../screens/profile';
+import Calendario_Semanal from '../screens/calendario_semanal';
 
 // Screen Names
-const homeName = 'Calendar';
+const homeName = 'Calendario_Semanal';
 const exercisesName = 'Exercises';
 const sugestionsName = 'Sugestions';
 const profileName = 'Profile';
@@ -39,7 +39,7 @@ export function TabNavigator() {
         },
       })}
     >
-      <Tab.Screen name={homeName} component={Home} />
+      <Tab.Screen name={homeName} component={Calendario_Semanal} />
       <Tab.Screen name={exercisesName} component={Exercises} />
       <Tab.Screen name={sugestionsName} component={Sugestions} />
       <Tab.Screen name={profileName} component={Profile} />
