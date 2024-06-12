@@ -6,7 +6,7 @@ import { exercisesStyle } from '../estilos/estilos';
 export function Crear1({ navigation }) {
   return (
     <View style={exercisesStyle.view}>
-      <Text style={exercisesStyle.text}>Login</Text>
+      <Text style={exercisesStyle.text}>Crear Cuenta</Text>
       <TextInput
         style={login2.input}
         placeholder="Correo electrónico"
