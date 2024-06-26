@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importa 
 
 const { width, height } = Dimensions.get('window');
 // Asegúrate de actualizar la ruta de la imagen
-import profileImage from 'C:/Users/crist/fitlendar/fitlendarFrontend/Frontend/assets/hombre.png';
+
 
 export default function Profile() {
     const [profile, setProfile] = useState({
@@ -26,7 +26,8 @@ export default function Profile() {
 
     const fetchUserData = async () => {
         try {
-            const response = await fetch('http://Fitlendar-LB-914168723.us-east-1.elb.amazonaws.com:8002/users/juancitotuviejo@gmail.com', {
+            
+            const response = await fetch('http://fitlendar-lb-1465450486.us-east-1.elb.amazonaws.com:8002/users/nuevousuario@gmail.com', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -62,7 +63,7 @@ export default function Profile() {
 
     const updateUserData = async () => {
         try {
-            const response = await fetch('http://Fitlendar-LB-914168723.us-east-1.elb.amazonaws.com:8002/users/juancitotuviejo@gmail.com', { // Asegúrate de tener esta ruta configurada en Flask
+            const response = await fetch('http://fitlendar-lb-1465450486.us-east-1.elb.amazonaws.com:8002/users/nuevousuario@gmail.com', { // Asegúrate de tener esta ruta configurada en Flask
                 method: 'PATCH', // o POST si así lo manejas
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,12 +87,11 @@ export default function Profile() {
             <StatusBar style="light" />
             <ScrollView style={styles.scrollView}>
                 <View style={styles.profileHeader}>
-                    <Image source={profile.foto} style={styles.profileImage} />
+                    <Image source={{ uri: profile.foto }} style={styles.profileImage} />
                     <View style={styles.profileInfo}>
                         <Text style={styles.profileName}>Hi, {profile.nombre}</Text>
-                        <View style={styles.beginnerBar}>
-                            <Text style={styles.beginnerText}>Beginner - 120 hrs</Text>
-                        </View>
+                        <Text style={styles.profiletext}>READY TO GO!!</Text>
+                        
                     </View>
                     <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.editButton}>
                         <Icon name="pencil" size={24} color="#FFFFFF" />
@@ -178,9 +178,14 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     profileName: {
-        fontSize: 24,
+        fontSize: 30,
         fontWeight: 'bold',
         color: '#FFFFFF',
+    },
+    profiletext: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#B71C1C',
     },
     beginnerBar: {
         backgroundColor: '#474B4E',
