@@ -1,124 +1,102 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import Slider from '@react-native-community/slider';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos';
 
+import * as Google from 'expo-auth-session/providers/google';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
+
+import FormRegistro from './form_registro.jsx';
+
+WebBrowser.maybeCompleteAuthSession();
+
 export function Crear1({ navigation }) {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [weight, setWeight] = useState('');
-  const [routineTime, setRoutineTime] = useState(50);
-  const [routineLevel, setRoutineLevel] = useState(50);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: "869271623477-pvhltl0ea9rg7n490em5beggbg8bmb4h.apps.googleusercontent.com",
+    androidClientId: "869271623477-q4tdvgpoo1ttsmtthdc7ftl5ciprb38c.apps.googleusercontent.com",
+    iosClientId: "869271623477-2etg9nmvc1c416gopdbgc6gd2lea0lkc.apps.googleusercontent.com",
+    webClientId: "869271623477-a3ig6o0thocpqmtbuhumqpg66r1ugd9j.apps.googleusercontent.com",
+  });
 
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      getUserInfo(authentication.accessToken);
+    }
+  }, [response]);
 
-  // para asegurar que se pase un valor numerico y no se rompa el app
-  const handleSliderChange = (value, setter) => {
-    setter(parseFloat(value) || 0);
+  const getUserInfo = async (token) => {
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      await AsyncStorage.setItem("@user", JSON.stringify({ ...user, registeredWithGoogle: true }));
+      navigation.replace('FormRegistro', { name: user.name, email: user.email });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const registerAsGuest = async () => {
+    const guestData = {
+      email,
+      password,
+      confirmPassword,
+      registeredWithGoogle: false,
+    };
+    await AsyncStorage.setItem("@user", JSON.stringify(guestData));
+    navigation.replace('FormRegistro', { name: '', email: '' });
+  };
+
 
   return (
     <View style={exercisesStyle.view}>
       <Text style={exercisesStyle.text}>Crear Cuenta</Text>
 
-      <TextInput 
-        style={login2.input}
-        placeholder="Nombre"
-        value = {name}
-        onChangeText={setName}
-      />
-
-      <View style={style.edad_peso_reg}>
-        <TextInput 
-          style={[login2.input, { width: '30%' }]}
-          placeholder="Edad"
-          keyboardType="numeric"
-          value={age}
-          onChangeText={setAge}
-        />
-
-        <TextInput 
-          style={[login2.input, { width: '30%' }]}
-          placeholder="Peso"
-          keyboardType="numeric"
-          value={weight}
-          onChangeText={setWeight}
-        />
-      </View>
-
-      <Text style={exercisesStyle.label}>¿Cuánto tiempo quieres disponer para tus rutinas?</Text>
-
-      <Slider
-        style={style.slider1_reg}
-        minimumValue={0}
-        maximumValue={100}
-        step={25}
-        value={routineTime}
-
-        onValueChange={(value) => handleSliderChange(value, setRoutineTime)}
-        minimumTrackTintColor="#C0F1FC"
-        maximumTrackTintColor="#0500FF"
-      />
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>0 - Cumplir nomás</Text>
-        <Text>100 - Aprovechar al máximo</Text>
-      </View>
-
-      <Text style={exercisesStyle.label}>Mis rutinas serán</Text>
-      <Slider
-        style={{ width: '100%', height: 40 }}
-        minimumValue={0}
-        maximumValue={100}
-        step={50}
-        value={routineLevel}
-
-        onValueChange={(value) => handleSliderChange(value, setRoutineLevel)}
-        minimumTrackTintColor="#F8FEB4"
-        maximumTrackTintColor="#FF0000"
-      />
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>0 - Relajadas</Text>
-        <Text>50 - Moderadas</Text>
-        <Text>100 - Exigentes</Text>
-      </View>
-
       <TextInput
         style={login2.input}
         placeholder="Correo electrónico"
         keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <TextInput
         style={login2.input}
         placeholder="Contraseña"
         secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
       />
 
       <TextInput
         style={login2.input}
         placeholder="Confirmar contraseña"
         secureTextEntry={true}
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
       />
 
       <TouchableOpacity
         style={login2.button}
-        onPress={() => navigation.replace('Home')}
+        onPress={registerAsGuest}
       >
         <Text style={login2.buttonText}>CONTINUAR</Text>
       </TouchableOpacity>
 
-      <Text style={login2.guestText}>¿Quieres continuar sin crear una cuenta?</Text>
-
-      <TouchableOpacity
-        style={login2.guestButton}
-        onPress={() => navigation.replace('Home')}
-      >
-        <Text style={login2.guestButtonText}>CONTINUAR COMO INVITADO</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity
         style={login2.googleButton2}
-        onPress={() => navigation.replace('Home')}
+        onPress={() => promptAsync()}
       >
         <Text style={login2.buttonText2}>Google button</Text>
       </TouchableOpacity>      
@@ -126,14 +104,4 @@ export function Crear1({ navigation }) {
   );
 }
 
-const style = StyleSheet.create({
-  edad_peso_reg : {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  slider1_reg : {
-    width: '100%',
-    height: 40,
-  }
-})
+export default Crear1;
