@@ -1,0 +1,52 @@
+import React, { useEffect } from 'react';
+import { View, Button, Alert, Platform } from 'react-native';
+import * as Calendar from 'expo-calendar';
+
+const CalendarTest = () => {
+  useEffect(() => {
+    requestCalendarPermissions();
+  }, []);
+
+  const requestCalendarPermissions = async () => {
+    if (Platform.OS === 'android') {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permisos de calendario denegados');
+        return;
+      }
+    }
+  };
+
+  const createTestEvent = async () => {
+    const calendarId = await getDefaultCalendarId();
+    const eventDetails = {
+      title: 'Evento de Prueba',
+      startDate: new Date('2024-06-30T10:00:00Z'),
+      endDate: new Date('2024-06-30T11:00:00Z'),
+      location: 'Sala de Conferencias',
+      notes: 'Este es un evento de prueba',
+    };
+
+    try {
+      const eventId = await Calendar.createEventAsync(calendarId, eventDetails);
+      Alert.alert('Evento creado', `ID del Evento: ${eventId}`);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Ocurrió un error al crear el evento');
+    }
+  };
+
+  const getDefaultCalendarId = async () => {
+    const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+    const defaultCalendar = calendars.find(calendar => calendar.source.name === 'Default' || calendar.source.name === 'iCloud');
+    return defaultCalendar.id;
+  };
+
+  return (
+    <View>
+      <Button title="Crear Evento de Prueba" onPress={createTestEvent} />
+    </View>
+  );
+};
+
+export default CalendarTest;
