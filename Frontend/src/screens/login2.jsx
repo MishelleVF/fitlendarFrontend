@@ -26,19 +26,26 @@ export function Login2({ navigation }) {
     handleEffect();
   }, [response])
 
-  async function handleEffect() {
-    // console.log("response: ", response);
-    // console.warn("token = " + response.authentication.accessToken);
-    // console.log("token = " + response.authentication.accessToken);
-    
+  // async function handleEffect() {
+  //   // verificamos si ya hay usuario
+  //   const user = await getLocalUser();
+  //   if (!user) {
+  //     // si no hay un usaario previo, hay que volver a obtener su informacion
+  //     getUserInfo(response.authentication.accessToken);
+  //   } else {
+  //     setUserInfo(user);
+  //   }
+  // }
 
-    // verificamos si ya hay usuario
-    const user = await getLocalUser();
-    if (!user) {
-      // si no hay un usaario previo, hay que volver a obtener su informacion
-      getUserInfo(response.authentication.accessToken);
+  async function handleEffect() {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      getUserInfo(authentication.accessToken);
     } else {
-      setUserInfo(user);
+      const user = await getLocalUser();
+      if (user) {
+        setUserInfo(user);
+      }
     }
   }
 
@@ -66,10 +73,27 @@ export function Login2({ navigation }) {
       );
 
       const user = await response.json();
-      console.warn(user);
-      console.log(user);
+
+      const localUser = await getLocalUser();
+
+      // console.warn(user);
+      // console.log(user);
+      // await AsyncStorage.setItem("@user", JSON.stringify(user));
+      // setUserInfo(user);
+      
+      // remplazar el localUser con la api
+      if (localUser && localUser.email === user.email) {
+        // Usuario ya registrado, navega a Home
+        await AsyncStorage.setItem("@user", JSON.stringify(localUser));
+        navigation.replace('Home');
+      } else {
+        // Usuario no registrado, navega a FormRegistro
+        navigation.replace('FormRegistro', { name: user.name, email: user.email });
+      }
+
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       setUserInfo(user);
+
     } catch (error) {
       console.log(error)
     }
@@ -84,6 +108,11 @@ export function Login2({ navigation }) {
 
       <Text style={styles.title}>INICIAR SESIÓN</Text>
       
+      <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
+        <Icon name="google" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Continuar con Google</Text>
+      </TouchableOpacity>
+{/* 
       { !userInfo ? (
       <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
         <Icon name="google" size={20} color="#fff" />
@@ -93,8 +122,12 @@ export function Login2({ navigation }) {
       <View>
         <Text style={styles.title}>Email: {userInfo.email}</Text>
         <Text style={styles.title}>Name: {userInfo.name}</Text>
+        <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
+          <Icon name="google" size={20} color="#fff" />
+          <Text style={styles.googleButtonText}>reiniciar localStorage</Text>
+        </TouchableOpacity>
       </View>  
-      ) }
+      ) } */}
 
       <TextInput
         style={styles.input}
