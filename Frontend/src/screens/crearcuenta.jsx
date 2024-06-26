@@ -25,6 +25,12 @@ export function Crear1({ navigation }) {
         secureTextEntry={true}
       />
 
+      <TextInput
+        style={login2.input}
+        placeholder="Edad"
+        secureTextEntry={true}
+      />
+
       <TouchableOpacity
         style={login2.button}
         onPress={() => navigation.replace('Home')}
