@@ -1,28 +1,25 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
 import exercises from './ejercicios.json';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const hoursOfDay = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
-
-export default function Calendario_Semanal(){
+export default function Calendario_Semanal() {
     const [selectedRange, setSelectedRange] = useState({ day: null, startHour: null, endHour: null });
     const [isSelecting, setIsSelecting] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-
     const [selectedExercises, setSelectExercise] = useState([]);
     const [schedule, setSchedule] = useState([]);
 
     const handleHourPress = (day, hour) => {
-        if (isSelecting && selectedRange.day == day) {
+        if (isSelecting && selectedRange.day === day) {
             setSelectedRange(prevRange => ({
                 ...prevRange,
                 endHour: hour
             }));
-        }
-        else {
-            setSelectedRange({day, startHour: hour, endHour: hour})
+        } else {
+            setSelectedRange({ day, startHour: hour, endHour: hour })
             setIsSelecting(true);
         }
     }
@@ -39,7 +36,7 @@ export default function Calendario_Semanal(){
     const handleFinish = () => {
         setSchedule(prevSchedule => [
             ...prevSchedule,
-            {...selectedRange, exercises: selectedExercises}
+            { ...selectedRange, exercises: selectedExercises }
         ]);
         setSelectExercise([]);
         setModalVisible(false);
@@ -52,35 +49,32 @@ export default function Calendario_Semanal(){
         const start = parseInt(selectedRange.startHour);
         const end = parseInt(selectedRange.endHour);
         const current = parseInt(hour);
-
         return start <= current && current <= end;
     };
 
-
     return (
         <View style={styles.container}>
-            {/*<Text style={styles.header}>Calendario Semanal</Text>*/}
-            <ScrollView>
-                <View style={styles.calendar}>
-                    {daysOfWeek.map(day => (
-                        <View key={day} style={styles.dayColumn}>
-                            <Text style={styles.dayHeader}>{day}</Text>
+            <ScrollView horizontal={true}>
+                {daysOfWeek.map(day => (
+                    <View key={day} style={styles.dayColumn}>
+                        <Text style={styles.dayHeader}>{day}</Text>
+                        <View style={styles.hourList}>
                             {hoursOfDay.map(hour => (
                                 <TouchableOpacity
                                     key={hour}
                                     style={[
                                         styles.hourBlock,
-                                        isHourInRange(day, hour) ? styles.selectedHourBlock : null
+                                        isHourInRange(day, hour) ? styles.selectedHourBlock : {}
                                     ]}
                                     onPress={() => handleHourPress(day, hour)}
                                 >
+                                    <Text style={styles.hourText}>{hour}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
-                    ))}
-                </View>
+                    </View>
+                ))}
             </ScrollView>
-
 
             {isSelecting && (
                 <TouchableOpacity onPress={handleConfirmSelection} style={styles.confirmButton}>
@@ -95,30 +89,17 @@ export default function Calendario_Semanal(){
                         Día: {selectedRange.day}, Horas: {selectedRange.startHour} - {selectedRange.endHour}
                     </Text>
                     <FlatList
-                        data = {exercises}
-                        renderItem={({item}) => (
-                            <View style={styles.card_ejercicio_a}>
-                                <View style={styles.info_ejercicio_a}>
-                                    <Text style={styles.title_ejercicio_a}>{item.nombre}</Text>
-                                    <Text style={styles.description_ejercicio_a}>{item.descripcion}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Dificultad: {item.dificultad}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Equipo: {item.equipo}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Peso: {item.peso} kg</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Series: {item.series}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Repeticiones: {item.repeticiones}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Duración: {item.duracion} s</Text>
-                                </View>
+                        data={exercises}
+                        renderItem={({ item }) => (
+                            <View style={styles.exerciseItem}>
+                                <Text style={styles.exerciseTitle}>{item.nombre}</Text>
+                                {/* Render other exercise details here */}
                             </View>
                         )}
                         keyExtractor={(item, index) => index.toString()}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                     />
-                    <View style={styles.selectedExercises}>
-                        {selectedExercises.map((exercise, index) => (
-                            <Text key={index}>{exercise.nombre}</Text>
-                        ))}
-                    </View>
                     <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
                         <Text style={styles.finishButtonText}>Terminar</Text>
                     </TouchableOpacity>
@@ -134,50 +115,58 @@ export default function Calendario_Semanal(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-        backgroundColor: '#000',
-
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
+        backgroundColor: '#f0f0f0',
     },
     calendar: {
         flexDirection: 'row',
+        padding: 10,
     },
     dayColumn: {
-        flex: 1,
-        margin: 5,
+        width: 120,
+        marginRight: 10,
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 4,
     },
     dayHeader: {
-        fontSize: 18,
+        padding: 10,
+        fontSize: 16,
         fontWeight: 'bold',
+        backgroundColor: '#e0e0e0',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
         textAlign: 'center',
-        color: '#fff',
-        marginBottom: 5,
+    },
+    hourList: {
+        paddingVertical: 10,
     },
     hourBlock: {
-        borderWidth: 1,
-        borderColor: '#000',
-        backgroundColor: '#fff',
         padding: 10,
-        height: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
     },
     selectedHourBlock: {
         backgroundColor: '#BBF247',
     },
+    hourText: {
+        textAlign: 'center',
+        color: '#333',
+    },
     confirmButton: {
-        padding: 15,
-        backgroundColor: '#BBF247',
-        borderRadius: 5,
         alignItems: 'center',
-        margin: 10,
+        padding: 12,
+        backgroundColor: '#4CAF50',
+        borderRadius: 6,
+        marginHorizontal: 20,
+        marginVertical: 10,
     },
     confirmButtonText: {
-        color: '#000',
+        color: '#ffffff',
+        fontSize: 16,
         fontWeight: 'bold',
     },
     modalContainer: {
