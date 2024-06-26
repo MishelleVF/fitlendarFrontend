@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 WebBrowser.maybeCompleteAuthSession();
 
 export function Login2({ navigation }) {
+  const [userInfo, setUserInfo] = useState(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: "869271623477-pvhltl0ea9rg7n490em5beggbg8bmb4h.apps.googleusercontent.com",
@@ -21,21 +22,80 @@ export function Login2({ navigation }) {
     webClientId: "869271623477-a3ig6o0thocpqmtbuhumqpg66r1ugd9j.apps.googleusercontent.com",
   });
 
+  useEffect(() => {
+    handleEffect();
+  }, [response])
+
+  async function handleEffect() {
+    // console.log("response: ", response);
+    // console.warn("token = " + response.authentication.accessToken);
+    // console.log("token = " + response.authentication.accessToken);
+    
+
+    // verificamos si ya hay usuario
+    const user = await getLocalUser();
+    if (!user) {
+      // si no hay un usaario previo, hay que volver a obtener su informacion
+      getUserInfo(response.authentication.accessToken);
+    } else {
+      setUserInfo(user);
+    }
+  }
+
+  // para verificar previamanete que el usuario se haya guardado
+
+  const getLocalUser = async () => {
+    const data = await AsyncStorage.getItem("@user");
+    if (!data) return null;
+    return JSON.parse(data);
+  }
+
+  // manera de obtener los datos del usuario logueado
+  const getUserInfo = async (token) => {
+    if (!token){
+      console.log("No existe token")
+      return;
+    }
+
+    try {
+      const response = await fetch (
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: {Authorization: `Bearer ${token}`},
+        }
+      );
+
+      const user = await response.json();
+      console.warn(user);
+      console.log(user);
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+    } catch (error) {
+      console.log(error)
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Image
-        source={{logo}}
+        source={logo}
         style={styles.logostyle}
       />
 
       <Text style={styles.title}>INICIAR SESIÓN</Text>
-      <TouchableOpacity style={styles.googleButton}>
+      
+      { !userInfo ? (
+      <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
         <Icon name="google" size={20} color="#fff" />
-        <Text style={styles.googleButtonText} onPress={() => {
-          promptAsync();
-        }}>Continuar con Google</Text>
+        <Text style={styles.googleButtonText}>Continuar con Google</Text>
       </TouchableOpacity>
+      ) : (
+      <View>
+        <Text style={styles.title}>Email: {userInfo.email}</Text>
+        <Text style={styles.title}>Name: {userInfo.name}</Text>
+      </View>  
+      ) }
+
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
