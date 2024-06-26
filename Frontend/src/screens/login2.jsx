@@ -5,7 +5,23 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import logo from '../../assets/logo.png';
 
+// librerias para googleloign
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+WebBrowser.maybeCompleteAuthSession();
+
 export function Login2({ navigation }) {
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: "869271623477-pvhltl0ea9rg7n490em5beggbg8bmb4h.apps.googleusercontent.com",
+    androidClientId: "869271623477-q4tdvgpoo1ttsmtthdc7ftl5ciprb38c.apps.googleusercontent.com",
+    iosClientId: "869271623477-2etg9nmvc1c416gopdbgc6gd2lea0lkc.apps.googleusercontent.com",
+    webClientId: "869271623477-a3ig6o0thocpqmtbuhumqpg66r1ugd9j.apps.googleusercontent.com",
+  });
+
+
   return (
     <View style={styles.container}>
       <Image
@@ -16,7 +32,9 @@ export function Login2({ navigation }) {
       <Text style={styles.title}>INICIAR SESIÓN</Text>
       <TouchableOpacity style={styles.googleButton}>
         <Icon name="google" size={20} color="#fff" />
-        <Text style={styles.googleButtonText}>Continuar con Google</Text>
+        <Text style={styles.googleButtonText} onPress={() => {
+          promptAsync();
+        }}>Continuar con Google</Text>
       </TouchableOpacity>
       <TextInput
         style={styles.input}
