@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos';
 
+import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function FormRegistro({ route, navigation }) {
@@ -15,12 +16,34 @@ export function FormRegistro({ route, navigation }) {
   const [routineTime, setRoutineTime] = useState(50);
   const [routineLevel, setRoutineLevel] = useState(50);
 
+  // para la ventana de alerta
+  useEffect(() => {
+    if (googleEmail) {
+      Toast.show({
+        type: 'info',
+        text1: 'El usuario no se ha registrado a Fitlander.',
+        text2: 'Rellene el formulario para registrarse.',
+        visibilityTime: 5000,
+      });
+    }
+  }, []);
+
   // para asegurar que se pase un valor numerico y no se rompa el app
   const handleSliderChange = (value, setter) => {
     setter(parseFloat(value) || 0);
   };
 
   const completeRegistration = async () => {
+
+    if (!name || !email || !age || !weight) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error de Registro',
+          text2: 'Por favor, complete todos los campos del formulario.',
+          visibilityTime: 5000,
+        });
+        return;
+    }
     const userData = {
       name,
       email,
@@ -29,6 +52,7 @@ export function FormRegistro({ route, navigation }) {
       routineTime,
       routineLevel,
       registeredWithGoogle: googleEmail ? true : false,
+      completedRegistration: true,
     };
     await AsyncStorage.setItem("@user", JSON.stringify(userData));
     navigation.replace('Home');

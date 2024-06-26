@@ -82,9 +82,9 @@ export function Login2({ navigation }) {
       // setUserInfo(user);
       
       // remplazar el localUser con la api
-      if (localUser && localUser.email === user.email) {
+      if (localUser && localUser.email === user.email && localUser.completedRegistration) {
         // Usuario ya registrado, navega a Home
-        await AsyncStorage.setItem("@user", JSON.stringify(localUser));
+        // await AsyncStorage.setItem("@user", JSON.stringify(localUser));
         navigation.replace('Home');
       } else {
         // Usuario no registrado, navega a FormRegistro
@@ -111,6 +111,11 @@ export function Login2({ navigation }) {
       <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
         <Icon name="google" size={20} color="#fff" />
         <Text style={styles.googleButtonText}>Continuar con Google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
+        <Icon name="google" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>reiniciar localStorage</Text>
       </TouchableOpacity>
 {/* 
       { !userInfo ? (
