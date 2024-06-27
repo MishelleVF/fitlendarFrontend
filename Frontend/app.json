@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Frontend",
-    "slug": "Frontend",
+    "name": "FrontendFitlendar",
+    "slug": "FrontendFitlendar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -12,16 +12,36 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.frontendfitlendar",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourcompany.frontendfitlendar",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "YOUR_ANDROID_API_KEY",
+          "certificateHash": "YOUR_ANDROID_CERTIFICATE_HASH"
+        }
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png",
+      "webClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com"      
+    },
+    "extra": {
+      "expoClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+      "iosClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+      "androidClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+      "webClientId": "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com"
     }
   }
 }

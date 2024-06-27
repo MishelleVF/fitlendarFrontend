@@ -5,16 +5,18 @@ import { Login } from "../screens/login";
 import { login2 } from "../estilos/estilos";
 import Login2 from "../screens/login2";
 import { Crear1 } from "../screens/crearcuenta";
+import { GoogleCalendarScreen } from '../screens/GoogleCalendarScreen';
 
 const Stack = createStackNavigator();
 
 export function Main() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="GoogleCalendar">
         <Stack.Screen name="Login" component={Login2} />
         <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Signup" component={Crear1} />
+        <Stack.Screen name="GoogleCalendar" component={GoogleCalendarScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -5,7 +5,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Screens
 import Exercises from '../screens/exercises';
 import Sugestions from '../screens/sugestions';
-import Profile from '../screens/profile';
 import Calendario_Semanal from '../screens/calendario_semanal';
 import FormPerfil from '../screens/formperfil';
 import CreateEventForm from '../screens/formEvent';
