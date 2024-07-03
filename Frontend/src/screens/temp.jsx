@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import logo from '../../assets/logo.png';
 
-// librerias para googleloign
+// librerias para google login
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from '../styles/LoginStyles';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -24,18 +24,7 @@ export function Login2({ navigation }) {
 
   useEffect(() => {
     handleEffect();
-  }, [response])
-
-  // async function handleEffect() {
-  //   // verificamos si ya hay usuario
-  //   const user = await getLocalUser();
-  //   if (!user) {
-  //     // si no hay un usaario previo, hay que volver a obtener su informacion
-  //     getUserInfo(response.authentication.accessToken);
-  //   } else {
-  //     setUserInfo(user);
-  //   }
-  // }
+  }, [response]);
 
   async function handleEffect() {
     if (response?.type === 'success') {
@@ -49,18 +38,15 @@ export function Login2({ navigation }) {
     }
   }
 
-  // para verificar previamanete que el usuario se haya guardado
-
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
     return JSON.parse(data);
   }
 
-  // manera de obtener los datos del usuario logueado
   const getUserInfo = async (token) => {
     if (!token){
-      console.log("No existe token")
+      console.log("No existe token");
       return;
     }
 
@@ -73,21 +59,11 @@ export function Login2({ navigation }) {
       );
 
       const user = await response.json();
-
       const localUser = await getLocalUser();
 
-      // console.warn(user);
-      // console.log(user);
-      // await AsyncStorage.setItem("@user", JSON.stringify(user));
-      // setUserInfo(user);
-      
-      // remplazar el localUser con la api
       if (localUser && localUser.email === user.email && localUser.completedRegistration) {
-        // Usuario ya registrado, navega a Home
-        // await AsyncStorage.setItem("@user", JSON.stringify(localUser));
         navigation.replace('Home');
       } else {
-        // Usuario no registrado, navega a FormRegistro
         navigation.replace('FormRegistro', { name: user.name, email: user.email });
       }
 
@@ -95,7 +71,7 @@ export function Login2({ navigation }) {
       setUserInfo(user);
 
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -103,9 +79,8 @@ export function Login2({ navigation }) {
     <View style={styles.container}>
       <Image
         source={logo}
-        style={styles.logostyle}
+        style={styles.logo}
       />
-
       <Text style={styles.title}>INICIAR SESIÓN</Text>
       
       <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
@@ -115,24 +90,8 @@ export function Login2({ navigation }) {
 
       <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
         <Icon name="google" size={20} color="#fff" />
-        <Text style={styles.googleButtonText}>reiniciar localStorage</Text>
+        <Text style={styles.googleButtonText}>Reiniciar localStorage</Text>
       </TouchableOpacity>
-{/* 
-      { !userInfo ? (
-      <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
-        <Icon name="google" size={20} color="#fff" />
-        <Text style={styles.googleButtonText}>Continuar con Google</Text>
-      </TouchableOpacity>
-      ) : (
-      <View>
-        <Text style={styles.title}>Email: {userInfo.email}</Text>
-        <Text style={styles.title}>Name: {userInfo.name}</Text>
-        <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
-          <Icon name="google" size={20} color="#fff" />
-          <Text style={styles.googleButtonText}>reiniciar localStorage</Text>
-        </TouchableOpacity>
-      </View>  
-      ) } */}
 
       <TextInput
         style={styles.input}
@@ -157,66 +116,5 @@ export function Login2({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  logostyle: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4285F4',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  googleButtonText: {
-    color: '#fff',
-    marginLeft: 10,
-    fontWeight: 'bold',
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-  },
-  button: {
-    width: '100%',
-    paddingVertical: 10,
-    borderRadius: 5,
-    backgroundColor: '#4285F4',
-    marginBottom: 20,
-  },
-  forgotPassword: {
-    color: '#4285F4',
-    marginBottom: 20,
-},
-  createAccount: {
-    color: '#000',
-  },
-  createAccountLink: {
-    color: '#4285F4',
-    fontWeight: 'bold',
-  },
-});
 
 export default Login2;

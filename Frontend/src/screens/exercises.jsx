@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Text, View, FlatList, Image, StyleSheet, Modal, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { Text, View, FlatList, Modal, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import ExerciseCard from '../components/exeriseCard';
+import styles from '../estilos/exerciseStyle';
 import exercises from './ejercicios.json';
 
 export default function Exercises() {
@@ -43,32 +45,25 @@ export default function Exercises() {
   };
 
   return (
-    <View style={styles.container_ejercicio_a}>
-      <Text style={styles.header_ejercicio_a}>Ejercicios</Text>
+    <View style={styles.container}>
       
       <FlatList
         data={exercises}
         renderItem={({ item }) => (
-          <View style={styles.card_ejercicio_a}>
-            <Image
-              source={{ uri: item.foto || 'https://via.placeholder.com/150' }}
-              style={styles.image_ejercicio_a}
-            />
-            <View style={styles.info_ejercicio_a}>
-              <Text style={styles.title_ejercicio_a}>{item.nombre}</Text>
-              <Text style={styles.description_ejercicio_a}>{item.descripcion}</Text>
-              <Text style={styles.detail_ejercicio_a}>Dificultad: {item.dificultad}</Text>
-              <Text style={styles.detail_ejercicio_a}>Equipo: {item.equipo}</Text>
-              <Text style={styles.detail_ejercicio_a}>Peso: {item.peso} kg</Text>
-              <Text style={styles.detail_ejercicio_a}>Series: {item.series}</Text>
-              <Text style={styles.detail_ejercicio_a}>Repeticiones: {item.repeticiones}</Text>
-              <Text style={styles.detail_ejercicio_a}>Duración: {item.duracion} s</Text>
-            </View>
-          </View>
+          <ExerciseCard
+            title={item.nombre}
+            descripcion={item.descripcion}
+            dificultad={item.dificultad}
+            equipo={item.equipo}
+            peso={item.peso}
+            series={item.series}
+            repeticiones={item.repeticiones}
+            duracion={item.duracion}
+          />
         )}
         keyExtractor={(item, index) => index.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
       />
 
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
@@ -136,118 +131,3 @@ export default function Exercises() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-    container_ejercicio_a: {
-      flex: 1,
-      backgroundColor: '#000',
-      padding: 20,
-    },
-    header_ejercicio_a: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      color: '#fff'
-    },
-    card_ejercicio_a: {
-      backgroundColor: '#f8f8f8',
-      borderRadius: 8,
-      padding: 15,
-      marginRight: 15,
-      width: 300,
-      shadowColor: '#fff',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.8,
-      shadowRadius: 2,
-      elevation: 1,
-    },
-    image_ejercicio_a: {
-      width: '100%',
-      height: 150,
-      borderRadius: 8,
-      marginBottom: 10,
-    },
-    info_ejercicio_a: {
-      flex: 1,
-    },
-    title_ejercicio_a: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    description_ejercicio_a: {
-      fontSize: 14,
-      marginBottom: 10,
-    },
-    detail_ejercicio_a: {
-      fontSize: 12,
-      color: '#555',
-    },
-    floatingButton: {
-      position: 'absolute',
-      bottom: 20,
-      right: 20,
-      backgroundColor: '#BBF247',
-      borderRadius: 30,
-      width: 60,
-      height: 60,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalContainer: {
-      flex: 1,
-      //justifyContent: 'center',
-    },
-    modalContent: {
-      backgroundColor: '#fff',
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      padding: 20,
-    },
-    form_title: {
-      marginBottom: 20,
-      fontSize: 40,
-      marginTop: 10,
-    },
-    from_button: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: 30,
-    },
-    from_button_enviar: {
-      backgroundColor: '#BBF247',
-      paddingVertical: 20,
-      paddingHorizontal: 40,
-      borderRadius: 5,
-      marginHorizontal: 40,
-    },
-    from_button_enviar_text: {
-      color: '#fff',
-      textAlign: 'center',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    from_button_cerrar: {
-      backgroundColor: '#fff',
-      borderWidth: 1,
-      borderColor: '#000',
-      paddingVertical: 20,
-      paddingHorizontal: 40,
-      borderRadius: 5,
-      marginHorizontal: 40,
-    },
-    from_button_cerrar_text: {
-      color: '#fff',
-      textAlign: 'center',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    form_text_input: {
-      marginBottom: 15,
-      borderWidth: 1,
-      padding: 10,
-      borderRadius: 5,
-    },
-    form_text_input_title: {
-      marginBottom: 2,
-    },
-  });

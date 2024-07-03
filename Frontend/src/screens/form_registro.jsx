@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import Slider from '@react-native-community/slider';
 import { login2 } from '../estilos/estilos.jsx';
 import { exercisesStyle } from '../estilos/estilos';
-
+import style from '../estilos/registerStyle'
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -135,16 +135,5 @@ export function FormRegistro({ route, navigation }) {
   );
 }
 
-const style = StyleSheet.create({
-  edad_peso_reg : {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  slider1_reg : {
-    width: '100%',
-    height: 40,
-  }
-})
 
 export default FormRegistro;
