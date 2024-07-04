@@ -6,34 +6,31 @@ import ExerciseList from '../components/excercisesList.jsx';
 import styles from '../estilos/calendarioSemanalStyle.jsx';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-const hoursOfDay = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+const hoursOfDay = Array.from({ length: 25 }, (_, i) => i.toString().padStart(2, '0') + ":00");
 
-
-export default function Calendario_Semanal(){
+export default function Calendario_Semanal() {
     const [selectedRange, setSelectedRange] = useState({ day: null, startHour: null, endHour: null });
     const [isSelecting, setIsSelecting] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-
     const [selectedExercises, setSelectExercise] = useState([]);
     const [schedule, setSchedule] = useState([]);
 
     const handleHourPress = (day, hour) => {
-        if (isSelecting && selectedRange.day == day) {
+        if (isSelecting && selectedRange.day === day) {
             setSelectedRange(prevRange => ({
                 ...prevRange,
                 endHour: hour
             }));
-        }
-        else {
-            setSelectedRange({day, startHour: hour, endHour: hour})
+        } else {
+            setSelectedRange({ day, startHour: hour, endHour: hour });
             setIsSelecting(true);
         }
-    }
+    };
 
     const handleConfirmSelection = () => {
         setIsSelecting(false);
         setModalVisible(true);
-    }
+    };
 
     const handleAddExercise = (exercise) => {
         setSelectExercise(prevExercises => [...prevExercises, exercise]);
@@ -42,52 +39,68 @@ export default function Calendario_Semanal(){
     const handleFinish = () => {
         setSchedule(prevSchedule => [
             ...prevSchedule,
-            {...selectedRange, exercises: selectedExercises}
+            { ...selectedRange, exercises: selectedExercises }
         ]);
         setSelectExercise([]);
         setModalVisible(false);
-    }
+    };
 
     const isHourInRange = (day, hour) => {
         if (selectedRange.day !== day || selectedRange.startHour === null || selectedRange.endHour === null) {
             return false;
         }
-        const start = parseInt(selectedRange.startHour);
-        const end = parseInt(selectedRange.endHour);
-        const current = parseInt(hour);
+        const start = parseInt(selectedRange.startHour, 10);
+        const end = parseInt(selectedRange.endHour, 10);
+        const current = parseInt(hour, 10);
 
         return start <= current && current <= end;
     };
 
-
     return (
         <View style={styles.container}>
-            {/*<Text style={styles.header}>Calendario Semanal</Text>*/}
-            <ScrollView>
-                <View style={styles.calendar}>
-                    {daysOfWeek.map(day => (
-                        <View key={day} style={styles.dayColumn}>
-                            <Text style={styles.dayHeader}>{day}</Text>
-                            {hoursOfDay.map(hour => (
-                                <TouchableOpacity
-                                    key={hour}
-                                    style={[
-                                        styles.hourBlock,
-                                        isHourInRange(day, hour) ? styles.selectedHourBlock : null
-                                    ]}
-                                    onPress={() => handleHourPress(day, hour)}
-                                >
-                                </TouchableOpacity>
+            <View style={styles.calendarContainer}>
+                <ScrollView horizontal>
+                    <View>
+                        <View style={styles.daysRow}>
+                            <View style={styles.hourColumnHeader} />
+                            {daysOfWeek.map(day => (
+                                <View key={day} style={styles.dayColumnHeader}>
+                                    <Text style={styles.dayHeader}>{day}</Text>
+                                </View>
                             ))}
                         </View>
-                    ))}
-                </View>
-            </ScrollView>
-
+                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+                            <View style={styles.hourColumn}>
+                                {hoursOfDay.map(hour => (
+                                    <View key={hour} style={styles.hourBlock}>
+                                        <Text style={styles.hourText}>{hour}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                            <View style={styles.calendar}>
+                                {daysOfWeek.map(day => (
+                                    <View key={day} style={styles.dayColumn}>
+                                        {hoursOfDay.map(hour => (
+                                            <TouchableOpacity
+                                                key={hour}
+                                                style={[
+                                                    styles.hourBlock,
+                                                    isHourInRange(day, hour) ? styles.selectedHourBlock : null
+                                                ]}
+                                                onPress={() => handleHourPress(day, hour)}
+                                            />
+                                        ))}
+                                    </View>
+                                ))}
+                            </View>
+                        </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
 
             {isSelecting && (
                 <TouchableOpacity onPress={handleConfirmSelection} style={styles.confirmButton}>
-                    <Text style={styles.confirmButtonText}>Confirmar Selección</Text>
+                    <Icon name="add" size={30} color="#fff" /> {/* Usando el ícono de más */}
                 </TouchableOpacity>
             )}
 
@@ -96,7 +109,7 @@ export default function Calendario_Semanal(){
                     <ExerciseList/>
                     <View style={styles.selectedExercises}>
                         {selectedExercises.map((exercise, index) => (
-                            <Text key={index}>{exercise.nombre}</Text>
+                            <Text key={index} style={styles.selectedExerciseText}>{exercise.nombre}</Text>
                         ))}
                     </View>
                     <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
