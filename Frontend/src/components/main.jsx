@@ -18,7 +18,7 @@ export function Main() {
         <Stack.Screen name="Signup" component={Crear1}  options={{ headerShown: false }}/>
         <Stack.Screen name="FormRegistro" component={FormRegistro}  options={{ headerShown: false }}/>
       </Stack.Navigator>
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      {/*<Toast ref={(ref) => Toast.setRef(ref)} />*/}
     </NavigationContainer>
   );
 }

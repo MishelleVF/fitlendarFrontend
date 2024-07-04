@@ -1,70 +1,61 @@
-import React, { useState } from 'react';
-import { Text, View, FlatList, Modal, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Modal, TouchableOpacity, TextInput, SafeAreaView, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
-import ExerciseCard from '../components/exeriseCard';
-import styles from '../estilos/exerciseStyle';
-import exercises from './ejercicios.json';
+import ExerciseList from '../components/excercisesList.jsx';
+import styles from '../estilos/exerciseStyle.jsx';
+
 
 export default function Exercises() {
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   // Formulario
-  const [nombre, setNombre] = useState('');
+  const [foto, setImageLink] = useState('');
+  const [nombre, setTitle] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [dificultad, setDificultad] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [equipo, setEquipo] = useState('');
   const [musculo, setMusculo] = useState('');
+  const [peso, setPeso] = useState('');
   const [series, setSeries] = useState('');
   const [repeticiones, setRepeticiones] = useState('');
-  const [tiempo, setTiempo] = useState('');
-  const [calorias, setCalorias] = useState('');
+  const [duracion, setDuracion] = useState('');
 
-  // Enviar datos al backend
-  const handleSubmit = () => {
-    () => setModalVisible(false);
-    fetch('API', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ nombre, musculo, series, repeticiones, tiempo, calorias }),
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Error en la solicitud');
-      })
-      // Manejar la respuesta del backend
-      .then(data => {
-        console.log('Datos guardados correctamente:', data);
-        //Alert.alert('Éxito', 'Los datos se guardaron correctamente');
-      })
-      .catch(error => {
-        console.error('Error al enviar los datos:', error.message);
-        //Alert.alert('Error', 'Ocurrió un error al enviar los datos');
-      });
+  // Estado para los ejercicios
+  const [exercises, setExercises] = useState([]);
+
+  const handleSubmit = async () => {
+    setModalVisible(false);
+
+    const exerciseData = {
+      nombre,
+      descripcion,
+      dificultad,
+      tipo,
+      equipo,
+      musculo,
+      peso,
+      series,
+      repeticiones,
+      duracion,
+      foto
+    };
+
+    try {
+      const response = await axios.post('http://fitlendar-lb-1465450486.us-east-1.elb.amazonaws.com:8001/ejercicios', exerciseData);
+      console.log('Datos guardados correctamente:', response.data);
+      Alert.alert('Éxito', 'Ejercicio guardado correctamente');
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+      Alert.alert('Error', 'No se pudo enviar los datos. Por favor, intenta de nuevo.');
+    }
   };
 
   return (
-    <View style={styles.container}>
-      
-      <FlatList
-        data={exercises}
-        renderItem={({ item }) => (
-          <ExerciseCard
-            title={item.nombre}
-            descripcion={item.descripcion}
-            dificultad={item.dificultad}
-            equipo={item.equipo}
-            peso={item.peso}
-            series={item.series}
-            repeticiones={item.repeticiones}
-            duracion={item.duracion}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      />
+    <View style={styles.container_ejercicio_a}>
+      <ExerciseList />
 
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon name="add" size={30} color="#000" />
@@ -79,18 +70,55 @@ export default function Exercises() {
         }}
       >
         <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <ScrollView style={styles.modalContent}>
             <Text style={styles.form_title}>MI EJERCICIO:</Text>
+
+            <Text style={styles.form_text_input_title}>Enlace de la Imagen: </Text>
+            <TextInput
+              value={foto}
+              onChangeText={text => setImageLink(text)}
+              style={styles.form_text_input}
+            />
             <Text style={styles.form_text_input_title}>Nombre del Ejercicio: </Text>
             <TextInput
               value={nombre}
-              onChangeText={text => setNombre(text)}
+              onChangeText={text => setTitle(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Descripción: </Text>
+            <TextInput
+              value={descripcion}
+              onChangeText={text => setDescripcion(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Dificultad: </Text>
+            <TextInput
+              value={dificultad}
+              onChangeText={text => setDificultad(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Tipo: </Text>
+            <TextInput
+              value={tipo}
+              onChangeText={text => setTipo(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Equipo: </Text>
+            <TextInput
+              value={equipo}
+              onChangeText={text => setEquipo(text)}
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Musculo: </Text>
             <TextInput
               value={musculo}
               onChangeText={text => setMusculo(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Peso: </Text>
+            <TextInput
+              value={peso}
+              onChangeText={text => setPeso(text)}
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Series: </Text>
@@ -105,18 +133,13 @@ export default function Exercises() {
               onChangeText={text => setRepeticiones(text)}
               style={styles.form_text_input}
             />
-            <Text style={styles.form_text_input_title}>Tiempo estimado: </Text>
+            <Text style={styles.form_text_input_title}>Duración: </Text>
             <TextInput
-              value={tiempo}
-              onChangeText={text => setTiempo(text)}
+              value={duracion}
+              onChangeText={text => setDuracion(text)}
               style={styles.form_text_input}
             />
-            <Text style={styles.form_text_input_title}>Calorias aprox.: </Text>
-            <TextInput
-              value={calorias}
-              onChangeText={text => setCalorias(text)}
-              style={styles.form_text_input}
-            />
+
             <View style={styles.from_button}>
               <TouchableOpacity style={styles.from_button_cerrar} onPress={() => setModalVisible(false)}>
                 <Text>Cerrar</Text>
@@ -125,7 +148,7 @@ export default function Exercises() {
                 <Text>Enviar</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </SafeAreaView>
       </Modal>
     </View>

@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
         padding: 10,
+        backgroundColor: '#000',
     },
     calendarContainer: {
         flexDirection: 'row',
@@ -87,7 +88,8 @@ export default StyleSheet.create({
     modalContainer: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#fff',
+        justifyContent: 'center',
+        backgroundColor: '#000'
     },
     modalHeader: {
         fontSize: 24,
@@ -153,3 +155,5 @@ export default StyleSheet.create({
         fontSize: 16,
     },
 });
+
+export default styles;
