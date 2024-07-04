@@ -1,7 +1,7 @@
 // ExerciseCardStyles.js
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
     },
@@ -84,3 +84,5 @@ export default StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
+export default styles;

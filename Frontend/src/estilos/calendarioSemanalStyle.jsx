@@ -1,11 +1,12 @@
 // CalendarioSemanalStyles.js
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
         backgroundColor: '#000',
+
     },
     header: {
         fontSize: 24,
@@ -53,6 +54,7 @@ export default StyleSheet.create({
         flex: 1,
         padding: 20,
         justifyContent: 'center',
+        backgroundColor: '#000'
     },
     modalHeader: {
         fontSize: 20,
@@ -80,42 +82,6 @@ export default StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
-    selectedExercises: {
-        marginTop: 20,
-    },
-    finishButton: {
-        padding: 15,
-        backgroundColor: '#BBF247',
-        borderRadius: 5,
-        alignItems: 'center',
-        margin: 10,
-    },
-    finishButtonText: {
-        color: '#000',
-        fontWeight: 'bold',
-    },
-    card_ejercicio_a: {
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 5,
-        margin: 5,
-    },
-    info_ejercicio_a: {
-        padding: 10,
-    },
-    title_ejercicio_a: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    description_ejercicio_a: {
-        fontSize: 16,
-        color: '#666',
-        marginBottom: 10,
-    },
-    detail_ejercicio_a: {
-        fontSize: 14,
-        marginBottom: 5,
-    },
 });
+
+export default styles;

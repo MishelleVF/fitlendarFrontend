@@ -61,6 +61,7 @@ export function Login({ navigation }) {
           headers: {Authorization: `Bearer ${token}`},
         }
       );
+      console.log(response);
 
       const user = await response.json();
 

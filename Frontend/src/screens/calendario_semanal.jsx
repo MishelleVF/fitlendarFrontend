@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import exercises from './ejercicios.json';
-import styles from '../estilos/calendarioSemanalStyle'
+import ExerciseList from '../components/excercisesList.jsx';
+
+import styles from '../estilos/calendarioSemanalStyle.jsx';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const hoursOfDay = Array.from({ length: 24 }, (_, i) => `${i}:00`);
@@ -90,31 +92,8 @@ export default function Calendario_Semanal(){
             )}
 
             <Modal visible={modalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalHeader}>Añadir Ejercicio</Text>
-                    <Text style={styles.modalSubHeader}>
-                        Día: {selectedRange.day}, Horas: {selectedRange.startHour} - {selectedRange.endHour}
-                    </Text>
-                    <FlatList
-                        data = {exercises}
-                        renderItem={({item}) => (
-                            <View style={styles.card_ejercicio_a}>
-                                <View style={styles.info_ejercicio_a}>
-                                    <Text style={styles.title_ejercicio_a}>{item.nombre}</Text>
-                                    <Text style={styles.description_ejercicio_a}>{item.descripcion}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Dificultad: {item.dificultad}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Equipo: {item.equipo}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Peso: {item.peso} kg</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Series: {item.series}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Repeticiones: {item.repeticiones}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Duración: {item.duracion} s</Text>
-                                </View>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
+                <SafeAreaView style={styles.modalContainer}>
+                    <ExerciseList/>
                     <View style={styles.selectedExercises}>
                         {selectedExercises.map((exercise, index) => (
                             <Text key={index}>{exercise.nombre}</Text>
@@ -126,7 +105,7 @@ export default function Calendario_Semanal(){
                     <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
                         <Text style={styles.closeButtonText}>Cerrar</Text>
                     </TouchableOpacity>
-                </View>
+                </SafeAreaView>
             </Modal>
         </View>
     );
