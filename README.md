@@ -5,3 +5,4 @@ Front end para el proyecto de software :D
 - Mishelle Stephany Villarreal Falcón
 - Andrés Alejandro Rojas
 - Cristopher Meneses
+- yo
