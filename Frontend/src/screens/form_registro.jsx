@@ -62,7 +62,7 @@ export function FormRegistro({ route, navigation }) {
   return (
     <View style={exercisesStyle.view}>
       <Text style={exercisesStyle.text}>Crear Cuenta</Text>
-
+                                                                                                                                      
       <TextInput 
         style={login2.input}
         placeholder="Nombre"
