@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, Modal, TouchableOpacity, TextInput, SafeAreaView, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -6,13 +6,12 @@ import axios from 'axios';
 import ExerciseList from '../components/excercisesList.jsx';
 import styles from '../estilos/exerciseStyle.jsx';
 
-
 export default function Exercises() {
   const [modalVisible, setModalVisible] = useState(false);
 
   // Formulario
-  const [foto, setImageLink] = useState('');
-  const [nombre, setTitle] = useState('');
+  const [foto, setFoto] = useState('');
+  const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [dificultad, setDificultad] = useState('');
   const [tipo, setTipo] = useState('');
@@ -22,6 +21,7 @@ export default function Exercises() {
   const [series, setSeries] = useState('');
   const [repeticiones, setRepeticiones] = useState('');
   const [duracion, setDuracion] = useState('');
+  const [calorias, setCalorias] = useState('');
 
   // Estado para los ejercicios
   const [exercises, setExercises] = useState([]);
@@ -40,7 +40,8 @@ export default function Exercises() {
       series,
       repeticiones,
       duracion,
-      foto
+      foto,
+      calorias
     };
 
     try {
@@ -54,7 +55,7 @@ export default function Exercises() {
   };
 
   return (
-    <View style={styles.container_ejercicio_a}>
+    <View style={styles.container}>
       <ExerciseList />
 
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
@@ -76,13 +77,13 @@ export default function Exercises() {
             <Text style={styles.form_text_input_title}>Enlace de la Imagen: </Text>
             <TextInput
               value={foto}
-              onChangeText={text => setImageLink(text)}
+              onChangeText={text => setFoto(text)}
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Nombre del Ejercicio: </Text>
             <TextInput
               value={nombre}
-              onChangeText={text => setTitle(text)}
+              onChangeText={text => setNombre(text)}
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Descripción: </Text>
@@ -119,32 +120,43 @@ export default function Exercises() {
             <TextInput
               value={peso}
               onChangeText={text => setPeso(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Series: </Text>
             <TextInput
               value={series}
               onChangeText={text => setSeries(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Repeticiones: </Text>
             <TextInput
               value={repeticiones}
               onChangeText={text => setRepeticiones(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Duración: </Text>
             <TextInput
               value={duracion}
               onChangeText={text => setDuracion(text)}
+              keyboardType="numeric"
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Calorias: </Text>
+            <TextInput
+              value={calorias}
+              onChangeText={text => setCalorias(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
 
-            <View style={styles.from_button}>
-              <TouchableOpacity style={styles.from_button_cerrar} onPress={() => setModalVisible(false)}>
+            <View style={styles.form_button}>
+              <TouchableOpacity style={styles.form_button_cerrar} onPress={() => setModalVisible(false)}>
                 <Text>Cerrar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.from_button_enviar} onPress={handleSubmit}>
+              <TouchableOpacity style={styles.form_button_enviar} onPress={handleSubmit}>
                 <Text>Enviar</Text>
               </TouchableOpacity>
             </View>
