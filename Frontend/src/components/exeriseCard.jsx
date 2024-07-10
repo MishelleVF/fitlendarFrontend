@@ -4,7 +4,7 @@ import * as Haptics from 'expo-haptics';
 
 import styles from '../estilos/exerciseCardStyles.jsx';
 
-const ExerciseCard = ({ imageUri, title, descripcion, dificultad, tipo, equipo, musculo, peso, series, repeticiones, duracion }) => {
+const ExerciseCard = ({ imageUri, title, descripcion, dificultad, tipo, equipo, musculo, peso, series, repeticiones, duracion, calorias }) => {
     const [isPressed, setIsPressed] = useState(false);
     const [previewVisible, setPreviewVisible] = useState(false);
     const scaleValue = useRef(new Animated.Value(1)).current;
@@ -89,6 +89,7 @@ const ExerciseCard = ({ imageUri, title, descripcion, dificultad, tipo, equipo, 
                                         {series ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Series:</Text> {series}</Text> : null}
                                         {repeticiones ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Repeticiones:</Text> {repeticiones}</Text> : null}
                                         {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Duración:</Text> {duracion} s</Text> : null}
+                                        {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Calorias:</Text> {calorias} s</Text> : null}
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>

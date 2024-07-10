@@ -36,6 +36,7 @@ const ExerciseList = () => {
           series={item.series}
           repeticiones={item.repeticiones}
           duracion={item.duracion}
+          calorias={item.calorias}
         />
       )}
       keyExtractor={(item, index) => index.toString()}
