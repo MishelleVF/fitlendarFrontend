@@ -2,14 +2,12 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container_ejercicio_a: {
-    flex: 1,
-    backgroundColor: '#000',
-    paddingVertical: 5,
+  container: {
+    paddingTop: 30
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 140,
+    bottom: 40,
     right: 23,
     backgroundColor: '#BBF247',
     borderRadius: 30,

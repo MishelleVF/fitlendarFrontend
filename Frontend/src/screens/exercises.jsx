@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, Modal, TouchableOpacity, TextInput, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { Text, View, Modal, TouchableOpacity, TextInput, SafeAreaView, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
@@ -57,7 +57,6 @@ export default function Exercises() {
   return (
     <View style={styles.container}>
       <ExerciseList />
-
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon name="add" size={30} color="#000" />
       </TouchableOpacity>
