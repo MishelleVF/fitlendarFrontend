@@ -41,7 +41,7 @@ export function Crear1({ navigation }) {
       );
 
       const user = await response.json();
-      navigation.replace('FormRegistro', { name: user.name, email: user.email });
+      navigation.replace('FormRegistro', { name: user.name, email: user.email, registeredWithGoogle: true });
       console.log(user);
     } catch (error) {
       console.log(error);
@@ -53,11 +53,11 @@ export function Crear1({ navigation }) {
       email,
       password,
       confirmPassword,
-      registeredWithGoogle: googleEmail ? true : false,
+      registeredWithGoogle: false,
       completedRegistration: true,
     };
     await AsyncStorage.setItem("@user", JSON.stringify(guestData));
-    navigation.replace('FormRegistro', { name: '', email: '' });
+    navigation.replace('FormRegistro', { name: '', email: guestData.email, registeredWithGoogle: false });
     console.log(guestData);
   };
 

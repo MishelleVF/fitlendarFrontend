@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Text, View, Image, TouchableWithoutFeedback, Animated, Modal } from 'react-native';
+import { Text, View, Image, StyleSheet, TouchableWithoutFeedback, Animated, Modal } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import styles from '../estilos/exerciseCardStyles';
 
-const ExerciseCard = ({ imageUri, title, descripcion, dificultad, equipo, peso, series, repeticiones, duracion }) => {
+import styles from '../estilos/exerciseCardStyles.jsx';
+
+const ExerciseCard = ({ imageUri, title, descripcion, dificultad, tipo, equipo, musculo, peso, series, repeticiones, duracion, calorias }) => {
     const [isPressed, setIsPressed] = useState(false);
     const [previewVisible, setPreviewVisible] = useState(false);
     const scaleValue = useRef(new Animated.Value(1)).current;
@@ -81,11 +82,14 @@ const ExerciseCard = ({ imageUri, title, descripcion, dificultad, equipo, peso, 
                                         <Text style={styles.title_ejercicio_a}>{title}</Text>
                                         <Text style={styles.description_ejercicio_a}>{descripcion}</Text>
                                         {dificultad ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Dificultad:</Text> {dificultad}</Text> : null}
+                                        {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Tipo:</Text> {tipo}</Text> : null}
                                         {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Equipo:</Text> {equipo}</Text> : null}
+                                        {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Musculo:</Text> {musculo}</Text> : null}
                                         {peso ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Peso:</Text> {peso} kg</Text> : null}
                                         {series ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Series:</Text> {series}</Text> : null}
                                         {repeticiones ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Repeticiones:</Text> {repeticiones}</Text> : null}
                                         {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Duración:</Text> {duracion} s</Text> : null}
+                                        {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Calorias:</Text> {calorias} s</Text> : null}
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>

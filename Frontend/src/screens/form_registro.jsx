@@ -8,9 +8,10 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function FormRegistro({ route, navigation }) {
-  const { name: googleName, email: googleEmail } = route.params;
-  const [name, setName] = useState(googleName || '');
-  const [email, setEmail] = useState(googleEmail || '');
+  const { name: name_, email: email_, registeredWithGoogle: googleUser } = route.params;
+  const [name, setName] = useState(name_ || '');
+  const [email, setEmail] = useState(email_ || '');
+  const [registeredWithGoogle, setGoogleUser] = useState(googleUser || false);
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [routineTime, setRoutineTime] = useState(50);
@@ -18,7 +19,7 @@ export function FormRegistro({ route, navigation }) {
 
   // para la ventana de alerta
   useEffect(() => {
-    if (googleEmail) {
+    if (email_) {
       Toast.show({
         type: 'info',
         text1: 'El usuario no se ha registrado a Fitlander.',
@@ -46,12 +47,12 @@ export function FormRegistro({ route, navigation }) {
     }
     const userData = {
       name,
-      email,
+      email: email_,
       age,
       weight,
       routineTime,
       routineLevel,
-      registeredWithGoogle: googleEmail ? true : false,
+      registeredWithGoogle: googleUser,
       completedRegistration: true,
     };
     await AsyncStorage.setItem("@user", JSON.stringify(userData));
@@ -62,7 +63,7 @@ export function FormRegistro({ route, navigation }) {
   return (
     <View style={exercisesStyle.view}>
       <Text style={exercisesStyle.text}>Crear Cuenta</Text>
-
+                                                                                                                                      
       <TextInput 
         style={login2.input}
         placeholder="Nombre"
@@ -92,7 +93,7 @@ export function FormRegistro({ route, navigation }) {
 
       <Slider
         style={style.slider1_reg}
-        minimumValue={0}
+        minimumValue={1}
         maximumValue={100}
         step={25}
         value={routineTime}
@@ -109,7 +110,7 @@ export function FormRegistro({ route, navigation }) {
       <Text style={exercisesStyle.label}>Mis rutinas serán</Text>
       <Slider
         style={{ width: '100%', height: 40 }}
-        minimumValue={0}
+        minimumValue={1}
         maximumValue={100}
         step={50}
         value={routineLevel}

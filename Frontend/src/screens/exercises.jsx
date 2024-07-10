@@ -1,71 +1,62 @@
 import React, { useState } from 'react';
-import { Text, View, FlatList, Modal, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { Text, View, Modal, TouchableOpacity, TextInput, SafeAreaView, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
-import ExerciseCard from '../components/exeriseCard';
-import styles from '../estilos/exerciseStyle';
-import exercises from './ejercicios.json';
+import ExerciseList from '../components/excercisesList.jsx';
+import styles from '../estilos/exerciseStyle.jsx';
 
 export default function Exercises() {
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   // Formulario
+  const [foto, setFoto] = useState('');
   const [nombre, setNombre] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [dificultad, setDificultad] = useState('');
+  const [tipo, setTipo] = useState('');
+  const [equipo, setEquipo] = useState('');
   const [musculo, setMusculo] = useState('');
+  const [peso, setPeso] = useState('');
   const [series, setSeries] = useState('');
   const [repeticiones, setRepeticiones] = useState('');
-  const [tiempo, setTiempo] = useState('');
+  const [duracion, setDuracion] = useState('');
   const [calorias, setCalorias] = useState('');
 
-  // Enviar datos al backend
-  const handleSubmit = () => {
-    () => setModalVisible(false);
-    fetch('API', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ nombre, musculo, series, repeticiones, tiempo, calorias }),
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Error en la solicitud');
-      })
-      // Manejar la respuesta del backend
-      .then(data => {
-        console.log('Datos guardados correctamente:', data);
-        //Alert.alert('Éxito', 'Los datos se guardaron correctamente');
-      })
-      .catch(error => {
-        console.error('Error al enviar los datos:', error.message);
-        //Alert.alert('Error', 'Ocurrió un error al enviar los datos');
-      });
+  // Estado para los ejercicios
+  const [exercises, setExercises] = useState([]);
+
+  const handleSubmit = async () => {
+    setModalVisible(false);
+
+    const exerciseData = {
+      nombre,
+      descripcion,
+      dificultad,
+      tipo,
+      equipo,
+      musculo,
+      peso,
+      series,
+      repeticiones,
+      duracion,
+      foto,
+      calorias
+    };
+
+    try {
+      const response = await axios.post('http://fitlendar-lb-1465450486.us-east-1.elb.amazonaws.com:8001/ejercicios', exerciseData);
+      console.log('Datos guardados correctamente:', response.data);
+      Alert.alert('Éxito', 'Ejercicio guardado correctamente');
+    } catch (error) {
+      console.error('Error al enviar los datos:', error);
+      Alert.alert('Error', 'No se pudo enviar los datos. Por favor, intenta de nuevo.');
+    }
   };
 
   return (
     <View style={styles.container}>
-      
-      <FlatList
-        data={exercises}
-        renderItem={({ item }) => (
-          <ExerciseCard
-            title={item.nombre}
-            descripcion={item.descripcion}
-            dificultad={item.dificultad}
-            equipo={item.equipo}
-            peso={item.peso}
-            series={item.series}
-            repeticiones={item.repeticiones}
-            duracion={item.duracion}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      />
-
+      <ExerciseList />
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon name="add" size={30} color="#000" />
       </TouchableOpacity>
@@ -79,12 +70,43 @@ export default function Exercises() {
         }}
       >
         <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <ScrollView style={styles.modalContent}>
             <Text style={styles.form_title}>MI EJERCICIO:</Text>
+
+            <Text style={styles.form_text_input_title}>Enlace de la Imagen: </Text>
+            <TextInput
+              value={foto}
+              onChangeText={text => setFoto(text)}
+              style={styles.form_text_input}
+            />
             <Text style={styles.form_text_input_title}>Nombre del Ejercicio: </Text>
             <TextInput
               value={nombre}
               onChangeText={text => setNombre(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Descripción: </Text>
+            <TextInput
+              value={descripcion}
+              onChangeText={text => setDescripcion(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Dificultad: </Text>
+            <TextInput
+              value={dificultad}
+              onChangeText={text => setDificultad(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Tipo: </Text>
+            <TextInput
+              value={tipo}
+              onChangeText={text => setTipo(text)}
+              style={styles.form_text_input}
+            />
+            <Text style={styles.form_text_input_title}>Equipo: </Text>
+            <TextInput
+              value={equipo}
+              onChangeText={text => setEquipo(text)}
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Musculo: </Text>
@@ -93,39 +115,51 @@ export default function Exercises() {
               onChangeText={text => setMusculo(text)}
               style={styles.form_text_input}
             />
+            <Text style={styles.form_text_input_title}>Peso: </Text>
+            <TextInput
+              value={peso}
+              onChangeText={text => setPeso(text)}
+              keyboardType="numeric"
+              style={styles.form_text_input}
+            />
             <Text style={styles.form_text_input_title}>Series: </Text>
             <TextInput
               value={series}
               onChangeText={text => setSeries(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
             <Text style={styles.form_text_input_title}>Repeticiones: </Text>
             <TextInput
               value={repeticiones}
               onChangeText={text => setRepeticiones(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
-            <Text style={styles.form_text_input_title}>Tiempo estimado: </Text>
+            <Text style={styles.form_text_input_title}>Duración: </Text>
             <TextInput
-              value={tiempo}
-              onChangeText={text => setTiempo(text)}
+              value={duracion}
+              onChangeText={text => setDuracion(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
-            <Text style={styles.form_text_input_title}>Calorias aprox.: </Text>
+            <Text style={styles.form_text_input_title}>Calorias: </Text>
             <TextInput
               value={calorias}
               onChangeText={text => setCalorias(text)}
+              keyboardType="numeric"
               style={styles.form_text_input}
             />
-            <View style={styles.from_button}>
-              <TouchableOpacity style={styles.from_button_cerrar} onPress={() => setModalVisible(false)}>
+
+            <View style={styles.form_button}>
+              <TouchableOpacity style={styles.form_button_cerrar} onPress={() => setModalVisible(false)}>
                 <Text>Cerrar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.from_button_enviar} onPress={handleSubmit}>
+              <TouchableOpacity style={styles.form_button_enviar} onPress={handleSubmit}>
                 <Text>Enviar</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </SafeAreaView>
       </Modal>
     </View>

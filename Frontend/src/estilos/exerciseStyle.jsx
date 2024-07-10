@@ -1,19 +1,14 @@
 // exerciseStyle.js
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  contentContainer: {
-    paddingTop: 30,
-    paddingBottom: 250,
+    paddingTop: 30
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 120,
-    right: 20,
+    top: 640,
+    right: 23,
     backgroundColor: '#BBF247',
     borderRadius: 30,
     width: 60,
@@ -47,6 +42,12 @@ export default StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 40,
   },
+  from_button_enviar_text: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   from_button_cerrar: {
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -55,6 +56,12 @@ export default StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 5,
     marginHorizontal: 40,
+  },
+  from_button_cerrar_text: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   form_text_input: {
     marginBottom: 15,
@@ -66,3 +73,5 @@ export default StyleSheet.create({
     marginBottom: 2,
   },
 });
+
+export default styles;
