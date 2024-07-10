@@ -44,8 +44,6 @@ export function TabNavigator() {
             iconName = focused ? 'barbell' : 'barbell';
           } else if (rn === profileName) {
             iconName = focused ? 'person' : 'person';
-          } else if (rn === sugestionsName) {
-            iconName = focused ? 'bulb-outline' : 'bulb-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -62,11 +60,6 @@ export function TabNavigator() {
       <Tab.Screen
         name={exercisesName}
         component={Exercises}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name={sugestionsName}
-        component={Sugestions}
         options={{ headerShown: false }}
       />
       <Tab.Screen
