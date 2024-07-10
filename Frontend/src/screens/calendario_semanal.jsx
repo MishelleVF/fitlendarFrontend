@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
-import { Text, View, TouchableOpacity, Modal, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons'; // Asegúrate de importar la librería de iconos
 import exercises from './ejercicios.json';
-import ExerciseList from '../components/excercisesList.jsx';
-
-import styles from '../estilos/calendarioSemanalStyle.jsx';
+import styles from '../estilos/calendarioSemanalStyle';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const hoursOfDay = Array.from({ length: 25 }, (_, i) => i.toString().padStart(2, '0') + ":00");
@@ -105,8 +104,31 @@ export default function Calendario_Semanal() {
             )}
 
             <Modal visible={modalVisible} animationType="slide">
-                <SafeAreaView style={styles.modalContainer}>
-                    <ExerciseList/>
+                <View style={styles.modalContainer}>
+                    <Text style={styles.modalHeader}>Añadir Ejercicio</Text>
+                    <Text style={styles.modalSubHeader}>
+                        Día: {selectedRange.day}, Horas: {selectedRange.startHour} - {selectedRange.endHour}
+                    </Text>
+                    <FlatList
+                        data={exercises}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => handleAddExercise(item)} style={styles.exerciseCard}>
+                                <View style={styles.exerciseInfo}>
+                                    <Text style={styles.exerciseTitle}>{item.nombre}</Text>
+                                    <Text style={styles.exerciseDescription}>{item.descripcion}</Text>
+                                    <Text style={styles.exerciseDetail}>Dificultad: {item.dificultad}</Text>
+                                    <Text style={styles.exerciseDetail}>Equipo: {item.equipo}</Text>
+                                    <Text style={styles.exerciseDetail}>Peso: {item.peso} kg</Text>
+                                    <Text style={styles.exerciseDetail}>Series: {item.series}</Text>
+                                    <Text style={styles.exerciseDetail}>Repeticiones: {item.repeticiones}</Text>
+                                    <Text style={styles.exerciseDetail}>Duración: {item.duracion} s</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    />
                     <View style={styles.selectedExercises}>
                         {selectedExercises.map((exercise, index) => (
                             <Text key={index} style={styles.selectedExerciseText}>{exercise.nombre}</Text>
@@ -118,7 +140,7 @@ export default function Calendario_Semanal() {
                     <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
                         <Text style={styles.closeButtonText}>Cerrar</Text>
                     </TouchableOpacity>
-                </SafeAreaView>
+                </View>
             </Modal>
         </View>
     );
