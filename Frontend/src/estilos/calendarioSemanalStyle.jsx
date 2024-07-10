@@ -5,6 +5,7 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#f5f5f5',
         padding: 10,
+        paddingBottom: 120
     },
     calendarContainer: {
         flexDirection: 'row',
@@ -48,7 +49,7 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     hourBlock: {
-        width: 60,
+        width: 80,
         height: 60,
         justifyContent: 'center',
         alignItems: 'center',
@@ -151,5 +152,13 @@ export default StyleSheet.create({
     closeButtonText: {
         color: '#fff',
         fontSize: 16,
+    },
+    eventHourBlock: {
+        backgroundColor: 'red',
+    },
+    eventText: {
+        color: 'white',
+        fontSize: 12,
+        textAlign: 'center',
     },
 });

@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
-    View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, Modal, TextInput, Button, Alert
+    View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, Modal, TextInput, Button, Alert, FlatList, Platform
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../estilos/profileStyle';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EventContext } from '../context/EventContext';
+
+WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get('window');
 
 export default function Profile() {
+    const { saveEventsToStorage } = useContext(EventContext);
     const [profile, setProfile] = useState({
         altura: '',
         nombre: '',
@@ -21,10 +29,32 @@ export default function Profile() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [editableProfile, setEditableProfile] = useState({ ...profile });
+    const [accessToken, setAccessToken] = useState(null);
+    const [error, setError] = useState(null);
+    const [events, setEvents] = useState([]);
+
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        expoClientId: "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+        iosClientId: "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+        androidClientId: "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+        webClientId: "869271623477-npuhondudeshv20hrrdgp7sfn460vfno.apps.googleusercontent.com",
+        scopes: ['https://www.googleapis.com/auth/calendar.readonly']
+    });
+
 
     useEffect(() => {
         fetchUserData();
     }, []);
+
+    useEffect(() => {
+        if (response?.type === 'success') {
+            const { authentication } = response;
+            setAccessToken(authentication.accessToken);
+            fetchEvents(authentication.accessToken);
+        } else if (response?.type === 'error') {
+            setError(response.error);
+        }
+    }, [response]);
 
     const fetchUserData = async () => {
         try {
@@ -79,6 +109,41 @@ export default function Profile() {
         }
     };
 
+    const fetchEvents = async (token) => {
+        try {
+            const now = new Date();
+            const startOfWeekDate = startOfWeek(now).toISOString();
+            const endOfWeekDate = endOfWeek(now).toISOString();
+
+            const response = await fetch(
+                `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${startOfWeekDate}&timeMax=${endOfWeekDate}&singleEvents=true&orderBy=startTime`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const data = await response.json();
+            setEvents(data.items || []);
+            // await saveEventsToStorage(data.items || []);
+            saveEventsToStorage(data.items || []);
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        }
+    };
+
+    // const saveEventsToStorage = async (events) => {
+    //     try {
+    //         await AsyncStorage.setItem('googleCalendarEvents', JSON.stringify(events));
+    //         Alert.alert('Success', 'Events saved to storage');
+    //     } catch (error) {
+    //         console.error('Error saving events to storage:', error);
+    //         Alert.alert('Error', 'Failed to save events to storage');
+    //     }
+    // };
+
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar style="light" />
@@ -111,6 +176,37 @@ export default function Profile() {
                         <Text style={styles.statValue}>{profile.racha}</Text>
                     </View>
                 </View>
+                <Button
+                    disabled={!request}
+                    title="Sincronizar con Calendar"
+                    onPress={() => {
+                        promptAsync();
+                    }}
+                />
+                {accessToken ? (
+                    <>
+                        <Text style={styles.successText}>Estás conectado</Text>
+                        <FlatList
+                            data={events}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <View style={styles.eventItem}>
+                                    <Text style={styles.eventTitle}>{item.summary}</Text>
+                                    <Text style={styles.eventTime}>
+                                        Inicio: {format(new Date(item.start.dateTime || item.start.date), 'Pp')}
+                                    </Text>
+                                    <Text style={styles.eventTime}>
+                                        Fin: {format(new Date(item.end.dateTime || item.end.date), 'Pp')}
+                                    </Text>
+                                </View>
+                            )}
+                        />
+                    </>
+                ) : error ? (
+                    <Text style={styles.errorText}>Error: {error.message}</Text>
+                ) : (
+                    <Text style={styles.infoText}>Presiona el botón para conectarte</Text>
+                )}
                 <Modal
                     animationType="slide"
                     transparent={true}
