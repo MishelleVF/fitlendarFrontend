@@ -1,37 +1,104 @@
-import { Text, View, Image } from 'react-native';
-import { StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Text, View, Image, StyleSheet, TouchableWithoutFeedback, Animated, Modal } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
-export default function ExerciseCard(){
+import styles from '../estilos/exerciseCardStyles.jsx';
+
+const ExerciseCard = ({ imageUri, title, descripcion, dificultad, tipo, equipo, musculo, peso, series, repeticiones, duracion, calorias }) => {
+    const [isPressed, setIsPressed] = useState(false);
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const scaleValue = useRef(new Animated.Value(1)).current;
+    const timeoutRef = useRef(null);
+    const backgroundColor = isPressed ? '#BBF247' : '#fff';
+
+    const handlePressIn = () => {
+        setIsPressed(true);
+        Animated.spring(scaleValue, {
+            toValue: 0.95,
+            useNativeDriver: true,
+        }).start();
+
+        timeoutRef.current = setTimeout(() => {
+            setPreviewVisible(true);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        }, 200);
+    };
+
+    const handlePressOut = () => {
+        setIsPressed(false);
+        Animated.spring(scaleValue, {
+            toValue: 1,
+            useNativeDriver: true,
+        }).start();
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+    };
+
+    const handlePress = () => {
+        console.log('Botón presionado');
+    };
+
+    const handleModalClose = () => {
+        setPreviewVisible(false);
+        handlePressOut();
+    };
+
     return (
-        <View style={styles.card}>
-            <Image
-                source={{ uri: 'https://placehold.co/100' }}
-                style = {styles.image_ejercicio}
-            />
-            <Text style={styles.title}>Card</Text>
-        </View>
-    )
-}
+        <View style={styles.container}>
+            <TouchableWithoutFeedback
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                onPress={handlePress}
+            >
+                <Animated.View style={[styles.card, { transform: [{ scale: scaleValue }], backgroundColor }]}>
+                    <Image
+                        source={{ uri: imageUri || 'https://via.placeholder.com/150' }}
+                        style={styles.image_ejercicio_card}
+                    />
+                    <View style={styles.text_box}>
+                        <Text style={styles.title}>{title}</Text>
+                    </View>
+                </Animated.View>
+            </TouchableWithoutFeedback>
 
-const styles = StyleSheet.create({
-    card: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 120,
-        width: '80%',
-        borderRadius: 8,
-        borderColor: '#000',
-        borderWidth: 1,
-        backgroundColor: '#fff',
-        margin: 10,
-    },
-    image_ejercicio: {
-        width: 100,
-        height: 100,
-        borderRadius: 8,
-        marginBottom: 10,
-    },
-    title: {
-        color: '#000',
-    }
-})
+            {previewVisible && (
+                <Modal
+                    transparent={true}
+                    animationType="fade"
+                    visible={previewVisible}
+                    onRequestClose={handleModalClose}
+                >
+                    <TouchableWithoutFeedback onPress={handleModalClose}>
+                        <View style={styles.modalOverlay}>
+                            <TouchableWithoutFeedback>
+                                <View style={styles.preview}>
+                                    <Image
+                                        source={{ uri: imageUri || 'https://via.placeholder.com/150' }}
+                                        style={styles.image_ejercicio_a}
+                                    />
+                                    <View style={styles.info_ejercicio_a}>
+                                        <Text style={styles.title_ejercicio_a}>{title}</Text>
+                                        <Text style={styles.description_ejercicio_a}>{descripcion}</Text>
+                                        {dificultad ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Dificultad:</Text> {dificultad}</Text> : null}
+                                        {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Tipo:</Text> {tipo}</Text> : null}
+                                        {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Equipo:</Text> {equipo}</Text> : null}
+                                        {equipo ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Musculo:</Text> {musculo}</Text> : null}
+                                        {peso ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Peso:</Text> {peso} kg</Text> : null}
+                                        {series ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Series:</Text> {series}</Text> : null}
+                                        {repeticiones ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Repeticiones:</Text> {repeticiones}</Text> : null}
+                                        {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Duración:</Text> {duracion} s</Text> : null}
+                                        {duracion ? <Text style={styles.detail_ejercicio_a}><Text style={styles.detailLabel}>Calorias:</Text> {calorias} s</Text> : null}
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            )}
+        </View>
+    );
+};
+
+export default ExerciseCard;

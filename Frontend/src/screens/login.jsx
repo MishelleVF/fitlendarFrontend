@@ -1,52 +1,123 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { login2 } from '../estilos/estilos.jsx';
-import { exercisesStyle } from '../estilos/estilos';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Button } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+import logo from '../../assets/logo.png';
+import styles from '../estilos/loginStyle';
+
+// librerias para googleloign
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export function Login({ navigation }) {
+  const [userInfo, setUserInfo] = useState(null);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: "869271623477-pvhltl0ea9rg7n490em5beggbg8bmb4h.apps.googleusercontent.com",
+    androidClientId: "869271623477-q4tdvgpoo1ttsmtthdc7ftl5ciprb38c.apps.googleusercontent.com",
+    iosClientId: "869271623477-2etg9nmvc1c416gopdbgc6gd2lea0lkc.apps.googleusercontent.com",
+    webClientId: "869271623477-a3ig6o0thocpqmtbuhumqpg66r1ugd9j.apps.googleusercontent.com",
+  });
+
+  useEffect(() => {
+    handleEffect();
+  }, [response])
+
+  async function handleEffect() {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      await AsyncStorage.setItem("@google_access_token", authentication.accessToken);
+      getUserInfo(authentication.accessToken);
+    } else {
+      const user = await getLocalUser();
+      if (user) {
+        setUserInfo(user);
+      }
+    }
+  }
+
+  const getLocalUser = async () => {
+    const data = await AsyncStorage.getItem("@user");
+    if (!data) return null;
+    return JSON.parse(data);
+  }
+
+  const getUserInfo = async (token) => {
+    if (!token){
+      console.log("No existe token");
+      return;
+    }
+
+    try {
+      const response = await fetch (
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: {Authorization: `Bearer ${token}`},
+        }
+      );
+      // await AsyncStorage.setItem("@token", token);
+      const user = await response.json();
+
+      const localUser = await getLocalUser();
+      
+      if (localUser && localUser.email === user.email && localUser.completedRegistration) {
+        navigation.replace('Home');
+      } else {
+        navigation.replace('FormRegistro', { name: user.name, email: user.email });
+      }
+
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
-    <View style={exercisesStyle.view}>
-      <Text style={exercisesStyle.text}>Login</Text>
+    <View style={styles.container}>
+      <Image
+        source={logo}
+        style={styles.logo}
+      />
+
+      <Text style={styles.title}>INICIAR SESIÓN</Text>
+      
+      <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
+        <Icon name="google" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Continuar con Google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
+        <Icon name="google" size={20} color="#fff" />
+        <Text style={styles.googleButtonText}>Reiniciar localStorage</Text>
+      </TouchableOpacity>
       <TextInput
-        style={login2.input}
+        style={styles.input}
         placeholder="Correo electrónico"
         keyboardType="email-address"
       />
-
       <TextInput
-        style={login2.input}
+        style={styles.input}
         placeholder="Contraseña"
         secureTextEntry={true}
       />
-
-      <TextInput
-        style={login2.input}
-        placeholder="Confirmar contraseña"
-        secureTextEntry={true}
-      />
-
-      <TouchableOpacity
-        style={login2.button}
-        onPress={() => navigation.replace('Home')}
-      >
-        <Text style={login2.buttonText}>CONTINUAR</Text>
+      <Button mode="contained" onPress={() => navigation.replace('Home')} style={styles.button}>
+        CONTINUAR
+      </Button>
+      <TouchableOpacity>
+        <Text style={styles.forgotPassword}>¿Olvidó su contraseña?</Text>
       </TouchableOpacity>
 
-      <Text style={login2.guestText}>¿Quieres continuar sin crear una cuenta?</Text>
-
-      <TouchableOpacity
-        style={login2.guestButton}
-        onPress={() => navigation.replace('Home')}
-      >
-        <Text style={login2.guestButtonText}>CONTINUAR COMO INVITADO</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={login2.googleButton2}
-        onPress={() => navigation.replace('Home')}
-      >
-        <Text style={login2.buttonText2}>Google button</Text>
+      <TouchableOpacity onPress={()=>navigation.replace('Signup')}>
+        <Text style={styles.createAccount}>¿No tiene cuenta? <Text style={styles.createAccountLink}>Crear una cuenta</Text></Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+export default Login;

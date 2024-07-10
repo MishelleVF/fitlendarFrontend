@@ -41,7 +41,7 @@ export function SignUp1({ navigation }) {
         <Text style={login2.guestButtonText}>CONTINUAR COMO INVITADO</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
+      <TouchableOpacity 
         style={login2.googleButton2}
         onPress={() => navigation.replace('Home')}
       >

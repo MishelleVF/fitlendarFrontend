@@ -2,6 +2,7 @@
   "expo": {
     "name": "Frontend",
     "slug": "Frontend",
+    "scheme": "Frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -12,16 +13,23 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.annderson23.fitlander"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.annderson23.fitlander"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ed992480-7f9b-47b5-8223-067f8f92e7c3"
+      }
     }
   }
 }

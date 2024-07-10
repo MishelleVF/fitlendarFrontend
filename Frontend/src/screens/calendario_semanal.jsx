@@ -1,36 +1,55 @@
-import React, {useState} from 'react';
-import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
-import exercises from './ejercicios.json';
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from '../estilos/calendarioSemanalStyle';
+import ExerciseList from '../components/excercisesList';
+import { EventContext } from '../context/EventContext';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-const hoursOfDay = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+const hoursOfDay = Array.from({ length: 25 }, (_, i) => i.toString().padStart(2, '0') + ":00");
 
-
-export default function Calendario_Semanal(){
+export default function Calendario_Semanal() {
+    const { events } = useContext(EventContext);
     const [selectedRange, setSelectedRange] = useState({ day: null, startHour: null, endHour: null });
     const [isSelecting, setIsSelecting] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-
     const [selectedExercises, setSelectExercise] = useState([]);
     const [schedule, setSchedule] = useState([]);
+    // const [events, setEvents] = useState([]);
+
+    // useEffect(() => {
+    //     loadEventsFromStorage();
+    // }, []);
+
+    // const loadEventsFromStorage = async () => {
+    //     try {
+    //         const storedEvents = await AsyncStorage.getItem('googleCalendarEvents');
+    //         if (storedEvents) {
+    //             setEvents(JSON.parse(storedEvents));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error loading events from storage:', error);
+    //         Alert.alert('Error', 'Failed to load events from storage');
+    //     }
+    // };
 
     const handleHourPress = (day, hour) => {
-        if (isSelecting && selectedRange.day == day) {
+        if (isSelecting && selectedRange.day === day) {
             setSelectedRange(prevRange => ({
                 ...prevRange,
                 endHour: hour
             }));
-        }
-        else {
-            setSelectedRange({day, startHour: hour, endHour: hour})
+        } else {
+            setSelectedRange({ day, startHour: hour, endHour: hour });
             setIsSelecting(true);
         }
-    }
+    };
 
     const handleConfirmSelection = () => {
         setIsSelecting(false);
         setModalVisible(true);
-    }
+    };
 
     const handleAddExercise = (exercise) => {
         setSelectExercise(prevExercises => [...prevExercises, exercise]);
@@ -39,86 +58,101 @@ export default function Calendario_Semanal(){
     const handleFinish = () => {
         setSchedule(prevSchedule => [
             ...prevSchedule,
-            {...selectedRange, exercises: selectedExercises}
+            { ...selectedRange, exercises: selectedExercises }
         ]);
         setSelectExercise([]);
         setModalVisible(false);
-    }
+    };
 
     const isHourInRange = (day, hour) => {
         if (selectedRange.day !== day || selectedRange.startHour === null || selectedRange.endHour === null) {
             return false;
         }
-        const start = parseInt(selectedRange.startHour);
-        const end = parseInt(selectedRange.endHour);
-        const current = parseInt(hour);
+        const start = parseInt(selectedRange.startHour, 10);
+        const end = parseInt(selectedRange.endHour, 10);
+        const current = parseInt(hour, 10);
 
         return start <= current && current <= end;
     };
 
+    const isEventInHour = (day, hour) => {
+        return events.some(event => {
+            const eventDay = new Date(event.start.dateTime || event.start.date).getDay();
+            const eventStartHour = new Date(event.start.dateTime || event.start.date).getHours();
+            const eventEndHour = new Date(event.end.dateTime || event.end.date).getHours();
+            const eventDayOfWeek = daysOfWeek[eventDay];
+            return eventDayOfWeek === day && eventStartHour <= parseInt(hour, 10) && parseInt(hour, 10) <= eventEndHour;
+        });
+    };
+
+    const getEventTitle = (day, hour) => {
+        const event = events.find(event => {
+            const eventDay = new Date(event.start.dateTime || event.start.date).getDay();
+            const eventStartHour = new Date(event.start.dateTime || event.start.date).getHours();
+            const eventEndHour = new Date(event.end.dateTime || event.end.date).getHours();
+            const eventDayOfWeek = daysOfWeek[eventDay];
+            return eventDayOfWeek === day && eventStartHour <= parseInt(hour, 10) && parseInt(hour, 10) <= eventEndHour;
+        });
+        return event ? event.summary : '';
+    };
 
     return (
         <View style={styles.container}>
-            {/*<Text style={styles.header}>Calendario Semanal</Text>*/}
-            <ScrollView>
-                <View style={styles.calendar}>
-                    {daysOfWeek.map(day => (
-                        <View key={day} style={styles.dayColumn}>
-                            <Text style={styles.dayHeader}>{day}</Text>
-                            {hoursOfDay.map(hour => (
-                                <TouchableOpacity
-                                    key={hour}
-                                    style={[
-                                        styles.hourBlock,
-                                        isHourInRange(day, hour) ? styles.selectedHourBlock : null
-                                    ]}
-                                    onPress={() => handleHourPress(day, hour)}
-                                >
-                                </TouchableOpacity>
+            <View style={styles.calendarContainer}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+                    <View>
+                        <View style={styles.daysRow}>
+                            <View style={styles.hourColumnHeader} />
+                            {daysOfWeek.map(day => (
+                                <View key={day} style={styles.dayColumnHeader}>
+                                    <Text style={styles.dayHeader}>{day}</Text>
+                                </View>
                             ))}
                         </View>
-                    ))}
-                </View>
-            </ScrollView>
-
+                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
+                            <View style={styles.hourColumn}>
+                                {hoursOfDay.map(hour => (
+                                    <View key={hour} style={styles.hourBlock}>
+                                        <Text style={styles.hourText}>{hour}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                            <View style={styles.calendar}>
+                                {daysOfWeek.map(day => (
+                                    <View key={day} style={styles.dayColumn}>
+                                        {hoursOfDay.map(hour => (
+                                            <TouchableOpacity
+                                                key={hour}
+                                                style={[
+                                                    styles.hourBlock,
+                                                    isHourInRange(day, hour) ? styles.selectedHourBlock : null,
+                                                    isEventInHour(day, hour) ? styles.eventHourBlock : null
+                                                ]}
+                                                onPress={() => handleHourPress(day, hour)}
+                                                disabled={isEventInHour(day, hour)}
+                                            >
+                                                {isEventInHour(day, hour) && (
+                                                    <Text style={styles.eventText}>{getEventTitle(day, hour)}</Text>
+                                                )}
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                ))}
+                            </View>
+                        </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
 
             {isSelecting && (
                 <TouchableOpacity onPress={handleConfirmSelection} style={styles.confirmButton}>
-                    <Text style={styles.confirmButtonText}>Confirmar Selección</Text>
+                    <Icon name="add" size={30} color="#fff" />
                 </TouchableOpacity>
             )}
 
             <Modal visible={modalVisible} animationType="slide">
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalHeader}>Añadir Ejercicio</Text>
-                    <Text style={styles.modalSubHeader}>
-                        Día: {selectedRange.day}, Horas: {selectedRange.startHour} - {selectedRange.endHour}
-                    </Text>
-                    <FlatList
-                        data = {exercises}
-                        renderItem={({item}) => (
-                            <View style={styles.card_ejercicio_a}>
-                                <View style={styles.info_ejercicio_a}>
-                                    <Text style={styles.title_ejercicio_a}>{item.nombre}</Text>
-                                    <Text style={styles.description_ejercicio_a}>{item.descripcion}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Dificultad: {item.dificultad}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Equipo: {item.equipo}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Peso: {item.peso} kg</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Series: {item.series}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Repeticiones: {item.repeticiones}</Text>
-                                    <Text style={styles.detail_ejercicio_a}>Duración: {item.duracion} s</Text>
-                                </View>
-                            </View>
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    />
-                    <View style={styles.selectedExercises}>
-                        {selectedExercises.map((exercise, index) => (
-                            <Text key={index}>{exercise.nombre}</Text>
-                        ))}
-                    </View>
+                    <ExerciseList/>
                     <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
                         <Text style={styles.finishButtonText}>Terminar</Text>
                     </TouchableOpacity>
@@ -130,85 +164,3 @@ export default function Calendario_Semanal(){
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#000',
-
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    calendar: {
-        flexDirection: 'row',
-    },
-    dayColumn: {
-        flex: 1,
-        margin: 5,
-    },
-    dayHeader: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#fff',
-        marginBottom: 5,
-    },
-    hourBlock: {
-        borderWidth: 1,
-        borderColor: '#000',
-        backgroundColor: '#fff',
-        padding: 10,
-        height: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    selectedHourBlock: {
-        backgroundColor: '#BBF247',
-    },
-    confirmButton: {
-        padding: 15,
-        backgroundColor: '#BBF247',
-        borderRadius: 5,
-        alignItems: 'center',
-        margin: 10,
-    },
-    confirmButtonText: {
-        color: '#000',
-        fontWeight: 'bold',
-    },
-    modalContainer: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-    },
-    modalHeader: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    modalSubHeader: {
-        fontSize: 16,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    exerciseItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-    closeButton: {
-        padding: 10,
-        backgroundColor: '#f00',
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    closeButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-});
