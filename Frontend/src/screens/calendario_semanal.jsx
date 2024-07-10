@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Asegúrate de importar la librería de iconos
-import exercises from './ejercicios.json';
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View, TouchableOpacity, Modal, FlatList, StyleSheet, ScrollView, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../estilos/calendarioSemanalStyle';
 import ExerciseList from '../components/excercisesList';
+import { EventContext } from '../context/EventContext';
 
 const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const hoursOfDay = Array.from({ length: 25 }, (_, i) => i.toString().padStart(2, '0') + ":00");
 
 export default function Calendario_Semanal() {
+    const { events } = useContext(EventContext);
     const [selectedRange, setSelectedRange] = useState({ day: null, startHour: null, endHour: null });
     const [isSelecting, setIsSelecting] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedExercises, setSelectExercise] = useState([]);
     const [schedule, setSchedule] = useState([]);
+    // const [events, setEvents] = useState([]);
+
+    // useEffect(() => {
+    //     loadEventsFromStorage();
+    // }, []);
+
+    // const loadEventsFromStorage = async () => {
+    //     try {
+    //         const storedEvents = await AsyncStorage.getItem('googleCalendarEvents');
+    //         if (storedEvents) {
+    //             setEvents(JSON.parse(storedEvents));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error loading events from storage:', error);
+    //         Alert.alert('Error', 'Failed to load events from storage');
+    //     }
+    // };
 
     const handleHourPress = (day, hour) => {
         if (isSelecting && selectedRange.day === day) {
@@ -56,10 +75,31 @@ export default function Calendario_Semanal() {
         return start <= current && current <= end;
     };
 
+    const isEventInHour = (day, hour) => {
+        return events.some(event => {
+            const eventDay = new Date(event.start.dateTime || event.start.date).getDay();
+            const eventStartHour = new Date(event.start.dateTime || event.start.date).getHours();
+            const eventEndHour = new Date(event.end.dateTime || event.end.date).getHours();
+            const eventDayOfWeek = daysOfWeek[eventDay];
+            return eventDayOfWeek === day && eventStartHour <= parseInt(hour, 10) && parseInt(hour, 10) <= eventEndHour;
+        });
+    };
+
+    const getEventTitle = (day, hour) => {
+        const event = events.find(event => {
+            const eventDay = new Date(event.start.dateTime || event.start.date).getDay();
+            const eventStartHour = new Date(event.start.dateTime || event.start.date).getHours();
+            const eventEndHour = new Date(event.end.dateTime || event.end.date).getHours();
+            const eventDayOfWeek = daysOfWeek[eventDay];
+            return eventDayOfWeek === day && eventStartHour <= parseInt(hour, 10) && parseInt(hour, 10) <= eventEndHour;
+        });
+        return event ? event.summary : '';
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.calendarContainer}>
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} >
                     <View>
                         <View style={styles.daysRow}>
                             <View style={styles.hourColumnHeader} />
@@ -69,7 +109,7 @@ export default function Calendario_Semanal() {
                                 </View>
                             ))}
                         </View>
-                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+                        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
                             <View style={styles.hourColumn}>
                                 {hoursOfDay.map(hour => (
                                     <View key={hour} style={styles.hourBlock}>
@@ -85,10 +125,16 @@ export default function Calendario_Semanal() {
                                                 key={hour}
                                                 style={[
                                                     styles.hourBlock,
-                                                    isHourInRange(day, hour) ? styles.selectedHourBlock : null
+                                                    isHourInRange(day, hour) ? styles.selectedHourBlock : null,
+                                                    isEventInHour(day, hour) ? styles.eventHourBlock : null
                                                 ]}
                                                 onPress={() => handleHourPress(day, hour)}
-                                            />
+                                                disabled={isEventInHour(day, hour)}
+                                            >
+                                                {isEventInHour(day, hour) && (
+                                                    <Text style={styles.eventText}>{getEventTitle(day, hour)}</Text>
+                                                )}
+                                            </TouchableOpacity>
                                         ))}
                                     </View>
                                 ))}
@@ -100,7 +146,7 @@ export default function Calendario_Semanal() {
 
             {isSelecting && (
                 <TouchableOpacity onPress={handleConfirmSelection} style={styles.confirmButton}>
-                    <Icon name="add" size={30} color="#fff" /> {/* Usando el ícono de más */}
+                    <Icon name="add" size={30} color="#fff" />
                 </TouchableOpacity>
             )}
 

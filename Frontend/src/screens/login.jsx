@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,6 +30,7 @@ export function Login({ navigation }) {
   async function handleEffect() {
     if (response?.type === 'success') {
       const { authentication } = response;
+      await AsyncStorage.setItem("@google_access_token", authentication.accessToken);
       getUserInfo(authentication.accessToken);
     } else {
       const user = await getLocalUser();
@@ -39,15 +40,12 @@ export function Login({ navigation }) {
     }
   }
 
-  // para verificar previamanete que el usuario se haya guardado
-
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
     return JSON.parse(data);
   }
 
-  // manera de obtener los datos del usuario logueado
   const getUserInfo = async (token) => {
     if (!token){
       console.log("No existe token");
@@ -61,24 +59,14 @@ export function Login({ navigation }) {
           headers: {Authorization: `Bearer ${token}`},
         }
       );
-      console.log(response);
-
+      // await AsyncStorage.setItem("@token", token);
       const user = await response.json();
 
       const localUser = await getLocalUser();
-
-      // console.warn(user);
-      // console.log(user);
-      // await AsyncStorage.setItem("@user", JSON.stringify(user));
-      // setUserInfo(user);
       
-      // remplazar el localUser con la api
       if (localUser && localUser.email === user.email && localUser.completedRegistration) {
-        // Usuario ya registrado, navega a Home
-        // await AsyncStorage.setItem("@user", JSON.stringify(localUser));
         navigation.replace('Home');
       } else {
-        // Usuario no registrado, navega a FormRegistro
         navigation.replace('FormRegistro', { name: user.name, email: user.email });
       }
 
@@ -108,23 +96,6 @@ export function Login({ navigation }) {
         <Icon name="google" size={20} color="#fff" />
         <Text style={styles.googleButtonText}>Reiniciar localStorage</Text>
       </TouchableOpacity>
-{/* 
-      { !userInfo ? (
-      <TouchableOpacity style={styles.googleButton} onPress={() => {promptAsync();}}>
-        <Icon name="google" size={20} color="#fff" />
-        <Text style={styles.googleButtonText}>Continuar con Google</Text>
-      </TouchableOpacity>
-      ) : (
-      <View>
-        <Text style={styles.title}>Email: {userInfo.email}</Text>
-        <Text style={styles.title}>Name: {userInfo.name}</Text>
-        <TouchableOpacity style={styles.googleButton} onPress={ async () => {await AsyncStorage.removeItem("@user"); }}>
-          <Icon name="google" size={20} color="#fff" />
-          <Text style={styles.googleButtonText}>reiniciar localStorage</Text>
-        </TouchableOpacity>
-      </View>  
-      ) } */}
-
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
